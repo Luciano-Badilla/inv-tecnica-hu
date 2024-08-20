@@ -36,7 +36,8 @@ class DepositoController extends Controller
 
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "creo el deposito: ".$request->input('addNombre');
+        $historia->detalle = "creo el deposito: ".$request->input('addNombre').".";
+        $historia->motivo = "creacion de deposito.";
         $historia->tipo_id = 2;
         $historia->save();
 
@@ -54,7 +55,7 @@ class DepositoController extends Controller
 
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "edito el deposito: ".$deposito->nombre." a ".$request->input('editIdentificador')." - ".$request->input('editNombre');
+        $historia->detalle = "edito el nombre del deposito: ".$deposito->nombre." a ".$request->input('editNombre').".";
         $historia->motivo = $request->input('editMotivo');
         $historia->tipo_id = 2;
         $historia->save();
@@ -75,7 +76,7 @@ class DepositoController extends Controller
         
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "elimino el deposito: ".$deposito->identificador." - ".$deposito->nombre;
+        $historia->detalle = "elimino el deposito: ".$deposito->nombre.".";
         $historia->motivo = $request->input("removeMotivo");
         $historia->tipo_id = 2;
         $historia->save();

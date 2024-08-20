@@ -36,11 +36,12 @@ class AreaController extends Controller
 
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "creo el area: ".$request->input('addNombre');
+        $historia->detalle = "creo el area: ".$request->input('addNombre').".";
+        $historia->motivo = "creacion de area.";
         $historia->tipo_id = 3;
         $historia->save();
 
-        return redirect()->back()->with('success', 'Area guardado correctamente.');
+        return redirect()->back()->with('success', 'Area guardada correctamente.');
     }
     public function edit(Request $request)
     {
@@ -54,7 +55,7 @@ class AreaController extends Controller
 
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "edito el area: ".$area->nombre." a ".$request->input('editNombre');
+        $historia->detalle = "edito el nombre del area: ".$area->nombre." a ".$request->input('editNombre').".";
         $historia->motivo = $request->input('editMotivo');
         $historia->tipo_id = 3;
         $historia->save();
@@ -64,7 +65,7 @@ class AreaController extends Controller
 
         
 
-        return redirect()->back()->with('success', 'Area editado correctamente.');
+        return redirect()->back()->with('success', 'Area editada correctamente.');
     }
     public function delete(Request $request)
     {
@@ -75,13 +76,13 @@ class AreaController extends Controller
         
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "elimino el area: ".$area->nombre;
+        $historia->detalle = "elimino el area: ".$area->nombre.".";
         $historia->motivo = $request->input('removeMotivo');
         $historia->tipo_id = 3;
         $historia->save();
 
         $area->delete();
 
-        return redirect()->back()->with('success', 'Area eliminado correctamente.');
+        return redirect()->back()->with('success', 'Area eliminada correctamente.');
     }
 }

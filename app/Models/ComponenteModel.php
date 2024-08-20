@@ -26,6 +26,12 @@ class ComponenteModel extends Model
         return $this->belongsTo(TipoComponenteModel::class, 'tipo_id');
     }
 
+    public function estado()
+    {
+        return $this->belongsTo(EstadoComponenteModel::class, 'estado_id');
+    }
+
+
 
     public function getComponentes()
     {
@@ -42,7 +48,20 @@ class ComponenteModel extends Model
             $query->where('nombre', $tipoNombre)
                 ->orWhere('nombre', $tipoNombre2);
         })
-            ->where('stock', '>', 0) // Filtrar por stock mayor a 0
+            ->where('stock', '>', 0) // Filtrar por stock mayor a 0  
+            ->where('estado_id', '=', 4)
+            ->with(['tipo', 'deposito'])
+            ->get();
+    }
+
+    public function getComponenteByTipoBystate($tipoNombre, $tipoNombre2)
+    {
+        return self::whereHas('tipo', function ($query) use ($tipoNombre, $tipoNombre2) {
+            $query->where('nombre', $tipoNombre)
+                ->orWhere('nombre', $tipoNombre2);
+        })
+            ->where('stock', '>', 0) // Filtrar por stock mayor a 0  
+            ->where('estado_id', '=', 5)
             ->with(['tipo', 'deposito'])
             ->get();
     }
@@ -53,6 +72,7 @@ class ComponenteModel extends Model
             $query->where('nombre', $tipoNombre)
                 ->orWhere('nombre', $tipoNombre2);
         })
+            ->where('estado_id', '=', 4)
             ->with(['tipo', 'deposito'])
             ->get();
     }

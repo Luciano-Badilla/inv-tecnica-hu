@@ -9,7 +9,10 @@ use App\Models\DepositoModel;
 use App\Models\HistoriaModel;
 use App\Models\HDD;
 use App\Models\SDD;
+use App\Models\EstadoComponenteModel;
 use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Support\Facades\Log;
 
 class ComponenteController extends Controller
 {
@@ -17,17 +20,18 @@ class ComponenteController extends Controller
 
     public function index()
     {
-        $componentes = ComponenteModel::with(['tipo', 'deposito'])->get();
+        $componentes = ComponenteModel::with(['tipo', 'deposito', 'estado'])->get();
         $historias = HistoriaModel::where('tipo_id', 4)
             ->orderBy('created_at', 'desc')
             ->get();
         $tipos = TipoComponenteModel::all();
         $depositos = DepositoModel::all();
         $nombresDepositos = DepositoModel::pluck('nombre');
+        $estados = EstadoComponenteModel::all();
 
 
         // Pasar los datos a la vista
-        return view('gest_componentes', ['componentes' => $componentes, 'historias' => $historias, 'tipos' => $tipos, 'depositos' => $depositos, 'nombresDepositos' => $nombresDepositos]);
+        return view('gest_componentes', ['estados' => $estados, 'componentes' => $componentes, 'historias' => $historias, 'tipos' => $tipos, 'depositos' => $depositos, 'nombresDepositos' => $nombresDepositos]);
     }
 
     public function store(Request $request)
@@ -49,7 +53,8 @@ class ComponenteController extends Controller
 
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "creo el componente: " . $request->input('addNombre');
+        $historia->detalle = "creo el componente: " . $request->input('addNombre') . ".";
+        $historia->motivo = "creacion de componente.";
         $historia->tipo_id = 4;
         $historia->save();
 
@@ -64,20 +69,21 @@ class ComponenteController extends Controller
 
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "edito el componente: (" . $componente->nombre . ", tipo: " . ($componente->tipo->nombre ?? 'no asignado') . ", deposito: " . ($componente->deposito->nombre ?? 'no asignado') . ", stock: " . $componente->stock . ")";
         $historia->tipo_id = 4;
+        $historia->motivo = $request->input('editMotivo');
+        if ($componente->nombre != $request->input('editNombre') && $componente->tipo_id != $request->input('editTipo')) {
+            $historia->detalle = "edito el nombre del componente: " . $componente->nombre . " a: " . $request->input('editNombre') . ", y el tipo de: " . ($componente->tipo->nombre ?? 'no asignado') . " a " . TipoComponenteModel::find($request->input('editTipo'))->nombre . ".";
+        } elseif ($componente->nombre != $request->input('editNombre')) {
+            $historia->detalle = "edito el nombre del componente: " . $componente->nombre . " a: " . $request->input('editNombre') . ".";
+        } elseif ($componente->tipo_id != $request->input('editTipo')) {
+            $historia->detalle = "edito el tipo del componente: " . $componente->nombre . " de " . ($componente->tipo->nombre ?? 'no asignado') . " a " . TipoComponenteModel::find($request->input('editTipo'))->nombre . ".";
+        }
 
         $componente->tipo_id = $request->input('editTipo');
-        //$componente->deposito_id = $request->input('editDeposito');
-        // $componente->stock = $request->input('editStock');
         $componente->nombre = $request->input('editNombre');
 
-        $historia->detalle = $historia->detalle . " a (" . $componente->nombre . ", tipo: " . ($componente->tipo->nombre ?? 'no asignado') . ", deposito: " . ($componente->deposito->nombre ?? 'no asignado') . ", stock: " . $componente->stock . ")";
-        $historia->motivo = $request->input('editMotivo');
         $historia->save();
         $componente->update();
-
-
 
         return redirect()->back()->with('success', 'Componente editado correctamente.');
     }
@@ -94,7 +100,7 @@ class ComponenteController extends Controller
 
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "agrego " . $request->input('editAddStock') . " nuevos: " . $componente->nombre . "/s";
+        $historia->detalle = "agrego " . $request->input('editAddStock') . " componente/s al stock de: " . $componente->nombre . "/s.";
         $historia->motivo = $request->input('editAddStockMotivo');
         $historia->tipo_id = 4;
         $historia->save();
@@ -115,15 +121,13 @@ class ComponenteController extends Controller
 
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "elimino " . $request->input('removeStock') . " " . $componente->nombre . "/s";
+        $historia->detalle = "elimino " . $request->input('removeStock') . " componente/s del stock de: " . $componente->nombre . "/s.";
         $historia->motivo = $request->input('removeStockMotivo');
         $historia->tipo_id = 4;
         $historia->save();
 
         $componente->stock = ($componente->stock - $request->input('removeStock'));
         $componente->update();
-
-
 
         return redirect()->back()->with('success', 'Stock eliminado correctamente.');
     }
@@ -136,7 +140,7 @@ class ComponenteController extends Controller
 
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "elimino el componente: " . $componente->nombre;
+        $historia->detalle = "elimino el componente: " . $componente->nombre . ".";
         $historia->motivo = $request->input('removeMotivo');
         $historia->tipo_id = 4;
         $historia->save();
@@ -154,10 +158,13 @@ class ComponenteController extends Controller
         $id = $request->input('transferNombre');
         $stockToTransfer = $request->input('transferStock');
         $depositoDestino = $request->input('transferDeposito');
+
         $motivo = $request->input('transferMotivo');
 
         // Encontrar el componente actual
         $componente = ComponenteModel::find($id);
+
+        $depositoActual = $componente->deposito->nombre;
 
         // Reducir el stock del componente original
         if ($componente->stock >= $stockToTransfer) {
@@ -198,11 +205,160 @@ class ComponenteController extends Controller
 
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "Transfirio " . $stockToTransfer . " unidades del componente " . $componente->nombre;
+        $historia->detalle = "transfirio " . $stockToTransfer . " " . $componente->nombre . "/s del deposito: " . $depositoActual . " al deposito: " . DepositoModel::find($depositoDestino)->nombre . ".";
         $historia->motivo = $motivo;
-        $historia->tipo_id = 6; // Tipo de transferencia
+        $historia->tipo_id = 4; // Tipo de transferencia
         $historia->save();
 
         return redirect()->back()->with('success', 'Componente transferido correctamente.');
+    }
+
+    public function transferState(Request $request)
+    {
+        $user = Auth::user();
+
+        // Obtener el ID del componente y otros datos del formulario
+        $id = $request->input('transferStateNombre');
+        $stockToTransfer = $request->input('transferStateStock');
+        $estadoDestino = $request->input('transferStateEstado');
+        $motivo = $request->input('transferStateMotivo');
+
+        // Encontrar el componente actual
+        $componente = ComponenteModel::find($id);
+
+        // Obtener el estado actual del componente
+        log::info($componente->estado_id);
+        $estadoActual = EstadoComponenteModel::find($componente->estado_id);
+
+        // Reducir el stock del componente original
+        if ($componente->stock >= $stockToTransfer) {
+            $componente->stock -= $stockToTransfer;
+            $componente->save();
+        } else {
+            return redirect()->back()->with('error', 'Stock insuficiente en el estado de origen.');
+        }
+
+        // Verificar si el estado destino existe
+        $estadoExiste = EstadoComponenteModel::find($estadoDestino);
+
+        if ($componente->estado_id == null || $estadoExiste == null) {
+            // Si el estado no está asignado o no existe, modificar el estado_id del componente actual
+            $componente->estado_id = $estadoDestino;
+            $componente->stock += $stockToTransfer; // Revertir la reducción de stock
+            $componente->save();
+        } else {
+            // Buscar un componente en el estado destino
+            $componenteDestino = ComponenteModel::where('nombre', $componente->nombre)
+                ->where('estado_id', $estadoDestino)
+                ->first();
+
+            if ($componenteDestino) {
+                // Si el componente ya existe en el estado destino, actualizar su stock
+                $componenteDestino->stock += $stockToTransfer;
+                $componenteDestino->save();
+            } else {
+                // Si el componente no existe en el estado destino, crear uno nuevo
+                $newComponente = new ComponenteModel();
+                $newComponente->nombre = $componente->nombre;
+                $newComponente->tipo_id = $componente->tipo_id;
+                $newComponente->estado_id = $estadoDestino;
+                $newComponente->deposito_id = $componente->deposito_id;
+                $newComponente->stock = $stockToTransfer;
+                $newComponente->save();
+            }
+        }
+
+        // Registrar la transferencia en la historia
+        $historia = new HistoriaModel();
+        $historia->tecnico = $user->name;
+        $historia->detalle = "transfirió " . $stockToTransfer . " " . $componente->nombre . "/s del estado: " . $estadoActual->nombre . " al estado: " . ($estadoExiste->nombre ?? 'Estado no asignado') . ".";
+        $historia->motivo = $motivo;
+        $historia->tipo_id = 4; // Tipo de transferencia
+        $historia->save();
+
+        return redirect()->back()->with('success', 'Estado del componente cambiado correctamente.');
+    }
+
+    public function transferStateByPc(
+        $id_attr,
+        $stockToTransfer_attr,
+        $estadoDestino_attr,
+        $motivo_attr,
+        $pc_iden_attr,
+        $pc_nombre_attr,
+        $need_historia
+    ) {
+        if ($id_attr) {
+            $user = Auth::user();
+
+            // Obtener el ID del componente y otros datos del formulario
+            $id = $id_attr;
+            $stockToTransfer = $stockToTransfer_attr;
+            $estadoDestino = $estadoDestino_attr;
+            $motivo = $motivo_attr;
+
+            // Encontrar el componente actual
+            $componente = ComponenteModel::find($id);
+
+            // Obtener el estado actual del componente
+            $estadoActual = EstadoComponenteModel::find($componente->estado_id);
+
+            // Reducir el stock del componente original
+            if ($componente->stock >= $stockToTransfer) {
+                $componente->stock -= $stockToTransfer;
+                $componente->save();
+            }
+
+            // Verificar si el estado destino existe
+            $estadoExiste = EstadoComponenteModel::find($estadoDestino);
+
+            // Variable para almacenar el componente que se devolverá
+            $componenteResultado = null;
+
+            if ($componente->estado_id == null || $estadoExiste == null) {
+                // Si el estado no está asignado o no existe, modificar el estado_id del componente actual
+                $componente->estado_id = $estadoDestino;
+                $componente->stock += $stockToTransfer; // Revertir la reducción de stock
+                $componente->save();
+
+                $componenteResultado = $componente; // Guardar el componente modificado
+            } else {
+                // Buscar un componente en el estado destino
+                $componenteDestino = ComponenteModel::where('nombre', $componente->nombre)
+                    ->where('estado_id', $estadoDestino)
+                    ->first();
+
+                if ($componenteDestino) {
+                    // Si el componente ya existe en el estado destino, actualizar su stock
+                    $componenteDestino->stock += $stockToTransfer;
+                    $componenteDestino->save();
+
+                    $componenteResultado = $componenteDestino; // Guardar el componente destino
+                } else {
+                    // Si el componente no existe en el estado destino, crear uno nuevo
+                    $newComponente = new ComponenteModel();
+                    $newComponente->nombre = $componente->nombre;
+                    $newComponente->tipo_id = $componente->tipo_id;
+                    $newComponente->estado_id = $estadoDestino;
+                    $newComponente->deposito_id = $componente->deposito_id;
+                    $newComponente->stock = $stockToTransfer;
+                    $newComponente->save();
+
+                    $componenteResultado = $newComponente; // Guardar el nuevo componente
+                }
+            }
+
+            // Registrar la transferencia en la historia
+            if ($need_historia) {
+                $historia = new HistoriaModel();
+                $historia->tecnico = $user->name;
+                $historia->detalle = "uso " . $stockToTransfer . " " . $componente->nombre . "/s " . " para el armado de la PC: " . $pc_iden_attr . " - " . $pc_nombre_attr . ".";
+                $historia->motivo = $motivo;
+                $historia->tipo_id = 4; // Tipo de transferencia
+                $historia->save();
+            }
+
+            return $componenteResultado->id; // Devolver el ID del componente resultante
+        }
     }
 }

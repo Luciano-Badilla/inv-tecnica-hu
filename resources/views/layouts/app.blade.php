@@ -40,6 +40,16 @@
     <!-- Custom Styles -->
     <style>
         /* Estilo para el campo de búsqueda */
+
+        .search_input {
+            margin-left: 5% !important;
+            border: 1px solid gray !important;
+            border-radius: 8px !important;
+            padding: 0.375rem 0.75rem !important;
+            font-size: 1rem !important;
+            background-color: #F8F9FA;
+        }
+
         .dataTables_filter {
             margin-left: 53% !important;
             display: flex;
@@ -829,6 +839,9 @@
                             '<button id="addButton" class="btn btn-dark " data-bs-toggle="modal" data-bs-target="#TransferModal">' +
                             '<i class="fa-solid fa-arrow-up-from-bracket"></i> Transferir a deposito' +
                             '</button>' +
+                            '<button id="addButton" class="btn btn-dark " data-bs-toggle="modal" data-bs-target="#TransferStateModal">' +
+                            '<i class="fa-solid fa-chart-column"></i> Cambiar estado' +
+                            '</button>' +
                             '</div>' +
                             '</div>'
                         );
@@ -981,11 +994,17 @@
                     var Motherboard = button.data('mother');
                     var Procesador = button.data('proce');
                     var Fuente = button.data('fuente');
-                    var Discos = button.data('discos');
-                    var discosIds = Discos ? Discos.toString().split(', ') : [];
+                    var Placavid = button.data('placavid');
+
+                    var discosIds = button.data('discosids') ? button.data('discosids').toString().split(', ') :
+                        [];
+                    var DiscosObj = button.data('discosobj');
+                    var DiscosArray = Object.values(DiscosObj);
                     var cant_discos = discosIds.length;
-                    var Rams = button.data('rams');
-                    var ramsIds = Rams ? Rams.toString().split(', ') : [];
+
+                    var ramsIds = button.data('ramsids') ? button.data('ramsids').toString().split(', ') : [];
+                    var RamsObj = button.data('ramsobj');
+                    var RamsArray = Object.values(RamsObj);
                     var cant_rams = ramsIds.length;
 
                     modal.find('#editEn-uso').prop('checked', enUso);
@@ -1009,6 +1028,7 @@
                     var motherboardToRemove = Motherboard.nombre;
                     var procesadorToRemove = Procesador.nombre;
                     var fuenteToRemove = Fuente.nombre;
+                    var placavidToRemove = Placavid.nombre;
 
                     // Busca y elimina las opciones con el nombre especificado
                     modal.find('#editMotherboard option').each(function() {
@@ -1029,36 +1049,93 @@
                         }
                     });
 
-                    if (Motherboard.stock == 0) {
+                    modal.find('#editPlacavid option').each(function() {
+                        if ($(this).text() === placavidToRemove) {
+                            $(this).remove();
+                        }
+                    });
+
+                    if (Motherboard.stock == 0 || Motherboard.estado_id == 5) {
                         modal.find('#editMotherboard').append(
-                            '<option value="' + Motherboard.id + '"  selected>' + Motherboard.nombre +
+                            '<option value="' + Motherboard.id + '"  selected>' + Motherboard.nombre + " - Actual" +
                             '</option>');
                     } else {
                         modal.find('#editMotherboard').val(Motherboard.id);
                     }
-                    if (Procesador.stock == 0) {
+                    if (Procesador.stock == 0 || Procesador.estado_id == 5) {
                         modal.find('#editProcesador').append(
-                            '<option value="' + Procesador.id + '" selected>' + Procesador.nombre +
+                            '<option value="' + Procesador.id + '" selected>' + Procesador.nombre + " - Actual" +
                             '</option>');
                     } else {
                         modal.find('#editProcesador').val(Procesador.id);
                     }
 
-                    if (Fuente.stock == 0) {
+                    if (Fuente.stock == 0 || Fuente.estado_id == 5) {
                         modal.find('#editFuente').append(
-                            '<option value="' + Fuente.id + '" selected>' + Fuente.nombre +
+                            '<option value="' + Fuente.id + '" selected>' + Fuente.nombre + " - Actual" +
                             '</option>');
                     } else {
                         modal.find('#editFuente').val(Fuente.id);
                     }
 
-                    for (i = 0; i < cant_discos; i++) {
+                    if (Placavid.stock == 0 || Placavid.estado_id == 5) {
+                        modal.find('#editPlacavid').append(
+                            '<option value="' + Placavid.id + '" selected>' + Placavid.nombre + " - Actual" +
+                            '</option>');
+                    } else {
+                        modal.find('#editPlacavid').val(Placavid.id);
+                    }
+
+                    for (i = 0; i < cant_discos - 1; i++) {
                         addInputDisc(modal.find('.add-input-disc'));
                     }
 
-                    for (i = 0; i < cant_rams; i++) {
+                    for (i = 0; i < cant_rams - 1; i++) {
                         addInputRam(modal.find('.add-input-ram'));
                     }
+
+                    container.find('.input-group').each(function(index) {
+                        var select = $(this).find('select');
+
+                        // Elimina solo las opciones con la clase deleteable-option
+                        select.find('option.deleteable-option').remove();
+
+                        if (index < cant_discos) {
+                            if (DiscosArray[index].stock == 0 || DiscosArray[index].estado_id == 5) {
+                                // Añade la nueva opción
+                                select.append('<option value="' + DiscosArray[index].id +
+                                    '" class="deleteable-option" selected>' + DiscosArray[index]
+                                    .nombre + " - " + DiscosArray[index].tipo.nombre +
+                                    '</option>');
+                            } else {
+                                select.val(discosIds[index]);
+                            }
+                        }
+                    });
+
+                    materialContainer.find('.input-group').each(function(index) {
+                        // Selecciona el <select> dentro del input-group actual
+                        var select = $(this).find('select');
+
+                        // Elimina solo las opciones con la clase deleteable-option
+                        select.find('option.deleteable-option2').remove();
+
+                        if (index < cant_rams) {
+                            if (RamsArray[index].stock == 0 || RamsArray[index].estado_id == 5) {
+                                // Añade la nueva opción con la clase deleteable-option
+                                select.append('<option value="' + RamsArray[index].id +
+                                    '" class="deleteable-option2" selected>' + RamsArray[index]
+                                    .nombre + " " + RamsArray[index].tipo.nombre +
+                                    '</option>');
+                            } else {
+                                // Selecciona el valor actual para el select
+                                select.val(ramsIds[index]);
+                            }
+                        }
+                    });
+
+                    updateDiscos();
+                    updateRams();
 
                 });
 
@@ -1153,6 +1230,7 @@
                     var motherboard = button.data('mother');
                     var procesador = button.data('proce');
                     var fuente = button.data('fuente');
+                    var placavid = button.data('placavid');
                     var discos = button.data('discos');
                     var rams = button.data('rams');
 
@@ -1170,6 +1248,7 @@
                     modal.find('#motherInfo').text(motherboard);
                     modal.find('#proceInfo').text(procesador);
                     modal.find('#fuenteInfo').text(fuente);
+                    modal.find('#placavidInfo').text(placavid);
                     modal.find('#discosInfo').text(discos);
                     modal.find('#ramsInfo').text(rams);
                 });

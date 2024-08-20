@@ -7,6 +7,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\ComponenteController;
 use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\PcController;
+use App\Http\Controllers\EstadoController;
 use Illuminate\Support\Facades\Route;
 
 ///////////////////////////
@@ -83,6 +84,9 @@ Route::post('/inv-tecnica/gest_componentes/delete', [ComponenteController::class
 Route::post('/inv-tecnica/gest_componentes/transfer', [ComponenteController::class, 'transfer'])
     ->name('transfer_componentes');
 
+Route::post('/inv-tecnica/gest_componentes/state', [ComponenteController::class, 'transferState'])
+    ->name('state_componentes');
+
 Route::get('/inv-tecnica/gest_pc', [PcController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('gest_pc');
@@ -98,6 +102,18 @@ Route::post('/inv-tecnica/gest_pc/delete', [PcController::class, 'delete'])
 
 Route::get('/inv-tecnica/gest_pc/historia/{id}', [PcController::class, 'getHistoria']);
 
+Route::get('/inv-tecnica/gest_state', [EstadoController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('gest_state');
+
+Route::post('/inv-tecnica/gest_state/store', [EstadoController::class, 'store'])
+    ->name('store_state');
+
+Route::patch('/inv-tecnica/gest_state/patch', [EstadoController::class, 'edit'])
+    ->name('edit_state');
+
+Route::post('/inv-tecnica/gest_state/delete', [EstadoController::class, 'delete'])
+    ->name('delete_state');
 
 
 Route::get('/inv-tecnica/historia', [HistoriaController::class, 'index'])

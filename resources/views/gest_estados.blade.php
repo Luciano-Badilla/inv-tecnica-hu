@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-lg text-gray-800 leading-tight">
-            {{ __('Categorias') }}
+            {{ __('Estados') }}
             <button type="button" class="small-box-footer show" id="show" data-bs-toggle="modal"
                 data-bs-target="#infoModal" style="margin-left: 0.5%">
                 <i class="fa-solid fa-circle-info"></i>
@@ -12,11 +12,11 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Categorias</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Estados</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Aqui debes agregar las categorias de componentes (RAM, Motherboard, Procesador, Perifericos, etc)
+                        Aqui debes agregar los estados donde se encuentran las PCs.
                     </div>
                 </div>
             </div>
@@ -26,26 +26,26 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Agregar nueva categoria</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Agregar nuevo estado</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('store_tipo') }}" method="POST" id="addModal">
+                        <form action="{{ route('store_state') }}" method="POST" id="addModal"
+                            style="display: flex; flex-direction: row; gap: 20px;">
                             @csrf
                             <!-- Mostrar errores de validación generales -->
-
-                            <div class="mb-3">
-                                <label for="addNombre" class="form-label">Categoria:</label>
+                            <div class="mb-3" style="flex: 1;">
+                                <label for="addNombre" class="form-label">Area:</label>
                                 <input type="text" class="form-control @error('addNombre') is-invalid @enderror"
-                                    id="addNombre" name="addNombre" style="border: 1px solid gray; border-radius:5px"
+                                    id="addNombre" name="addNombre" style="border: 1px solid gray; border-radius: 5px;"
                                     required>
                             </div>
                     </div>
+
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-dark">Agregar</button>
                         </form>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -54,27 +54,28 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Editar categoria</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Editar estado</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('edit_tipo') }}" method="POST" id="addModal">
+                        <form action="{{ route('edit_state') }}" method="POST" id="addModal">
                             @method('PATCH')
                             @csrf
                             <!-- Mostrar errores de validación generales -->
 
-                            <div class="mb-3">
-                                <label for="editNombre" class="form-label">Categoria:</label>
+                            <div class="mb-3" style="flex: 1;">
                                 <input type="hidden" id="editId" name="editId">
+                                <label for="editNombre" class="form-label">Area:</label>
                                 <input type="text" class="form-control @error('editNombre') is-invalid @enderror"
-                                    id="editNombre" name="editNombre" style="border: 1px solid gray; border-radius:5px"
-                                    required>
+                                    id="editNombre" name="editNombre"
+                                    style="border: 1px solid gray; border-radius: 5px;" required>
                             </div>
                             <div class="mb-3" style="flex: 1;">
                                 <label for="editMotivo" class="form-label">Motivo:</label>
-                                <input type="text" class="form-control @error('editMotivo') is-invalid @enderror"
-                                    id="editMotivo" name="editMotivo"
-                                    style="border: 1px solid gray; border-radius: 5px;" required>
+                                <input type="text"
+                                    class="form-control @error('editMotivo') is-invalid @enderror" id="editMotivo"
+                                    name="editMotivo" style="border: 1px solid gray; border-radius: 5px;"
+                                    required>
                             </div>
                     </div>
                     <div class="modal-footer">
@@ -85,7 +86,8 @@
             </div>
         </div>
 
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -94,7 +96,7 @@
                             aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('delete_tipo') }}" method="POST" id="addModal">
+                        <form action="{{ route('delete_state') }}" method="POST" id="addModal">
                             @csrf
                             <!-- Mostrar errores de validación generales -->
 
@@ -107,8 +109,7 @@
                             </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal"
-                            aria-label="Close">No</button>
+                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal" aria-label="Close">No</button>
                         <button type="submit" class="btn btn-danger">Eliminar</button>
                         </form>
                     </div>
@@ -179,23 +180,21 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($tipos as $tipo)
+                                @foreach ($estados as $estado)
                                     <tr>
-                                        <td><b>{{ $tipo->nombre }}</b></td>
+                                        <td><b>{{ $estado->nombre }}</b></td>
 
                                         <td>
                                             <div style="display: flex; justify-content: right;">
                                                 <button class="btn btn-dark mr-2" data-bs-toggle="modal"
-                                                    data-bs-target="#editModal" data-id="{{ $tipo->id }}"
-                                                    data-nombre="{{ $tipo->nombre }}">
+                                                    data-bs-target="#editModal" data-id="{{ $estado->id }}"
+                                                    data-nombre="{{ $estado->nombre }}">
                                                     <i class="fas fa-pencil"></i>
                                                 </button>
 
-
-
-                                                <input type="hidden" value="{{ $tipo->id }}" name="deleteId">
-                                                <button class="btn btn-dark mr-2" data-id="{{ $tipo->id }}"
-                                                    data-nombre="{{ $tipo->nombre }}" data-bs-toggle="modal"
+                                                <input type="hidden" value="{{ $estado->id }}" name="deleteId">
+                                                <button class="btn btn-dark mr-2" data-id="{{ $estado->id }}"
+                                                    data-nombre="{{ $estado->nombre }}" data-bs-toggle="modal"
                                                     data-bs-target="#deleteModal">
                                                     <i class="fas fa-trash"></i>
                                                 </button>

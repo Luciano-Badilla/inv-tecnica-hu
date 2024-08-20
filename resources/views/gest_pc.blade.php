@@ -30,7 +30,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Todos los componentes usados en el armado se quitaran del stock automaticamente.
+                        Todos los componentes usados en el armado se quitaran y agregaran al stock automaticamente.
                     </div>
                 </div>
             </div>
@@ -89,6 +89,10 @@
                                 <div class="flex" style="display: flex; flex-direction: row; gap:5px">
                                     <h2><b>Fuente: </b></h2>
                                     <p id="fuenteInfo"></p>
+                                </div>
+                                <div class="flex" style="display: flex; flex-direction: row; gap:5px">
+                                    <h2><b>Placa de video: </b></h2>
+                                    <p id="placavidInfo"></p>
                                 </div>
                             </div>
                         </div>
@@ -204,6 +208,20 @@
                                     </div>
                                     <div style="display: flex; flex-direction: row; gap: 20px;">
                                         <div class="mb-3" style="flex: 1;">
+                                            <label for="addPlacavid" class="form-label">Placa de video:</label>
+                                            <select class="form-control @error('addPlacavid') is-invalid @enderror"
+                                                id="addPlacavid" name="addPlacavid"
+                                                style="border: 1px solid gray; border-radius: 5px; max-width: 165px;">
+                                                <option value="" disabled selected>Selecciona una placa de video
+                                                </option>
+                                                @foreach ($placasvid as $placavid)
+                                                    <option value="{{ $placavid->id }}">
+                                                        {{ $placavid->nombre . ' - ' . ($placavid->deposito->nombre ?? 'no asignado') }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="mb-3" style="flex: 1;">
                                             <label for="addFuente" class="form-label">Fuente:</label>
                                             <select class="form-control @error('addFuente') is-invalid @enderror"
                                                 id="addFuente" name="addFuente"
@@ -291,9 +309,11 @@
                     <div class="modal-body" style="display: flex;">
                         <form action="{{ route('edit_pc') }}" method="POST" id="editPcModal"
                             style="display: flex; flex-direction: column; gap: 20px; ">
+                            @method('PATCH')
                             @csrf
                             <!-- Mostrar errores de validación generales -->
                             <div class="form-check d-flex align-items-top">
+                                <input type="hidden" name="editId" id="editId">
                                 <input class="form-check-input" type="checkbox" id="editEn-uso" name="en-uso">
                                 <label class="form-check-label" for="editEn-uso">
                                     En uso
@@ -310,8 +330,8 @@
                                 <div class="mb-3" style="margin-right: 2.5%">
                                     <label for="editNombre" class="form-label">Nombre:</label>
                                     <input type="text"
-                                        class="form-control @error('editNombre') is-invalid @enderror" id="editNombre"
-                                        name="editNombre" placeholder="Nombre"
+                                        class="form-control @error('editNombre') is-invalid @enderror"
+                                        id="editNombre" name="editNombre" placeholder="Nombre"
                                         style="border: 1px solid gray; border-radius: 5px; max-width: 165px;" required>
                                 </div>
                                 <div class="mb-3" style="margin-right: 2.5%">
@@ -391,6 +411,21 @@
                                     <div style="display: flex; flex-direction: row; gap: 20px;">
                                         <div style="display: flex; flex-direction: row; gap: 20px;">
                                             <div class="mb-3" style="flex: 1;">
+                                                <label for="editPlacavid" class="form-label">Placa de video:</label>
+                                                <select
+                                                    class="form-control @error('editPlacavid') is-invalid @enderror"
+                                                    id="editPlacavid" name="editPlacavid"
+                                                    style="border: 1px solid gray; border-radius: 5px; max-width: 165px;">
+                                                    <option value="" disabled selected>Selecciona una placa de
+                                                        video</option>
+                                                    @foreach ($placasvid as $placavid)
+                                                        <option value="{{ $placavid->id }}">
+                                                            {{ $placavid->nombre . ' - ' . ($placavid->deposito->nombre ?? 'no asignado') }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3" style="flex: 1;">
                                                 <label for="editFuente" class="form-label">Fuente:</label>
                                                 <select class="form-control @error('editFuente') is-invalid @enderror"
                                                     id="editFuente" name="editFuente"
@@ -440,7 +475,7 @@
                                     <div class="form-group">
                                         <label for="material2">RAMs:</label>
                                         <div id="material-container-2">
-                                            <div class="form-group input-group mb-3">
+                                            <div class="form-group input-group mb-3 select">
                                                 <select id="rams2-1" name="rams2[]" class="form-control"
                                                     style="border: 1px solid gray; border-top-left-radius: 5px; border-bottom-left-radius: 5px; max-width: 165px;">
                                                     <option value="" disabled selected>Selecciona una RAM
@@ -461,6 +496,28 @@
                                     </div>
                                 </div>
 
+
+                            </div>
+                            <div class="form-check d-flex align-items-top">
+                                <input class="form-check-input" type="checkbox" id="en-uso-mantenimineto">
+                                <label class="form-check-label" for="en-uso-mantenimineto">
+                                    Se realizo manteniminto
+                                </label>
+                            </div>
+                            <div id="div-detalle-mant">
+                                <div class="mb-3" style="flex: 1; display:none">
+                                    <label for="editDetalle" class="form-label">Detalle:</label>
+                                    <input type="text"
+                                        class="form-control @error('editDetalle') is-invalid @enderror"
+                                        id="editDetalle" name="editDetalle"
+                                        style="border: 1px solid gray; border-radius: 5px;">
+                                </div>
+                            </div>
+                            <div class="mb-3" style="flex: 1;">
+                                <label for="editMotivo" class="form-label">Motivo:</label>
+                                <input type="text" class="form-control @error('editMotivo') is-invalid @enderror"
+                                    id="editMotivo" name="editMotivo"
+                                    style="border: 1px solid gray; border-radius: 5px;" required>
                             </div>
 
                     </div>
@@ -567,18 +624,26 @@
                     </div>
                 -->
                     <div class="container mt-4">
-                        <button id="addButton" class="btn btn-dark mr-2" data-bs-toggle="modal"
-                            data-bs-target="#addModal">
-                            <i class="fas fa-plus"></i> Armar PC
-                        </button>
-                        <button type="button" class="small-box-footer show" id="show" data-bs-toggle="modal"
-                            data-bs-target="#infoAddPc">
-                            <i class="fa-solid fa-circle-info"></i>
-                        </button>
-                        <div class="flex"
+                        <div style="display: flex; justify-content: space-between;">
+                            <div>
+                                <button id="addButton" class="btn btn-dark mr-2" data-bs-toggle="modal"
+                                    data-bs-target="#addModal">
+                                    <i class="fas fa-plus"></i> Armar PC
+                                </button>
+                                <button type="button" class="small-box-footer show" id="show"
+                                    data-bs-toggle="modal" data-bs-target="#infoAddPc">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </button>
+                            </div>
+                            <div>
+                                <input class="search_input" id="search_pc" type="text" placeholder="Buscar">
+                            </div>
+                        </div>
+                        <div class="flex" id="div-pc"
                             style="margin-top:5%;margin-bottom:5%; flex-wrap:wrap; gap: 9px; justify-content:center">
+
                             @foreach ($pcs as $pc)
-                                <div class="card"
+                                <div class="card pc-card" data-nombre="{{ strtolower($pc->nombre) }}" data-id="{{ strtolower($pc->identificador) }}"
                                     style="margin-top: -1.5%;max-width: 16%; display: flex; flex-direction: column; justify-content: space-between; height: auto;">
                                     <!-- Ajusta la altura según tus necesidades -->
                                     <span class="icon">
@@ -601,7 +666,7 @@
                                             </span>
                                         @endif
                                     </div>
-                                    <p>{{ 'ID: ' . $pc->identificador }}</p>
+                                    <p>{{ 'N° inv: ' . $pc->identificador }}</p>
                                     <p>{{ 'IPv4: ' . $pc->ip }}</p>
                                     @if ($pc->area_id != null || $pc->deposito_id != null)
                                         @if ($pc->area_id != null)
@@ -628,6 +693,7 @@
                                                 data-mother="{{ $pc->componentes->firstWhere('tipo_id', 5)->nombre ?? '' }}"
                                                 data-proce="{{ $pc->componentes->firstWhere('tipo_id', 4)->nombre ?? '' }}"
                                                 data-fuente="{{ $pc->componentes->firstWhere('tipo_id', 2)->nombre ?? '' }}"
+                                                data-placavid="{{ $pc->componentes->firstWhere('tipo_id', 7)->nombre ?? 'Sin placa de video' }}"
                                                 data-discos="{{ $pc->componentes->whereIn('tipo_id', [6, 3])->pluck('nombre')->implode(', ') }}"
                                                 data-rams="{{ $pc->componentes->where('tipo_id', 1)->pluck('nombre')->implode(', ') }}">
                                                 <i class="fas fa-circle-info"></i>
@@ -638,13 +704,16 @@
                                                 data-nombre="{{ $pc->nombre }}" data-ip="{{ $pc->ip }}"
                                                 data-area="{{ $pc->area_id }}"
                                                 data-deposito="{{ $pc->deposito_id }}"
-                                                data-enuso="{{ $pc->area_id && $pc->area->nombre ? 'true' : 'false' }}"
+                                                data-enuso="{{ $pc->area_id ? 'true' : 'false' }}"
                                                 data-mother="{{ $pc->componentes->firstWhere('tipo_id', 5) }}"
                                                 data-proce="{{ $pc->componentes->firstWhere('tipo_id', 4) }}"
                                                 data-fuente="{{ $pc->componentes->firstWhere('tipo_id', 2) }}"
-                                                data-discos="{{ $pc->componentes->whereIn('tipo_id', [6, 3])->pluck('id')->implode(', ') }}"
-                                                data-rams="{{ $pc->componentes->where('tipo_id', 1)->pluck('id')->implode(', ') }}">
-                                                <i class="fas fa-pencil"></i>
+                                                data-placavid="{{ $pc->componentes->firstWhere('tipo_id', 7) }}"
+                                                data-discosids="{{ $pc->componentes->whereIn('tipo_id', [6, 3])->pluck('id')->implode(', ') }}"
+                                                data-discosobj='@json($pc->componentes->whereIn('tipo_id', [6, 3]))'
+                                                data-ramsids="{{ $pc->componentes->where('tipo_id', 1)->pluck('id')->implode(', ') }}"
+                                                data-ramsobj="{{ $pc->componentes->where('tipo_id', 1) }}">
+                                                <i class="fa-solid fa-wrench"></i>
                                             </button>
                                             <button class="btn btn-dark icon" data-bs-toggle="modal"
                                                 data-bs-target="#deleteModal" data-id="{{ $pc->id }}">
@@ -656,37 +725,6 @@
                             @endforeach
                         </div>
 
-
-
-
-                        <h2 class="font-semibold text-lg text-gray-800 leading-tight" style="margin: 2%">
-                            {{ __('Historial de cambios:') }}
-                        </h2>
-
-                        <div class="container mt-4">
-                            <table id="table_historias" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Tecnico</th>
-                                        <th>Detalle</th>
-                                        <th>Motivo</th>
-                                        <th>Fecha</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($historias as $historia)
-                                        <tr>
-                                            <td><b>{{ $historia->tecnico }}</b>
-                                            <td><b>{{ $historia->detalle }}</b>
-                                            <td><b>{{ $historia->motivo }}</b>
-                                            <td><b>{{ $historia->created_at }}</b>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-
-                            </table>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -700,6 +738,23 @@
 </x-app-layout>
 <script>
     $(document).ready(function() {
+
+        $('#search_pc').on('input', function() {
+            var searchTerm = $(this).val().toLowerCase();
+
+            // Filtrar las tarjetas de PC
+            $('.pc-card').each(function() {
+                var nombre = $(this).data('nombre');
+                var id = $(this).data('id');
+
+                // Mostrar la tarjeta si el nombre o la IP contiene el término de búsqueda
+                if (nombre.includes(searchTerm) || id.includes(searchTerm)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
 
         // Función para actualizar las opciones en todos los selects de discos
         function updateOptionsDisc() {
@@ -952,8 +1007,6 @@
             setTimeout(updateOptionsDiscModal2, 0);
         });
 
-        // Inicializar las opciones al cargar la página
-        updateOptionsDiscModal2();
 
         function updateOptionsRamModal2() {
             let stock = {};
@@ -1020,9 +1073,14 @@
             setTimeout(updateOptionsRamModal2, 0);
         });
 
-        // Inicializar las opciones al cargar la página
-        updateOptionsRamModal2();
 
+        window.updateRams = function() {
+            updateOptionsRamModal2();
+        }
+
+        window.updateDiscos = function() {
+            updateOptionsDiscModal2();
+        }
 
         $('#historyPcModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Botón que abrió el modal
@@ -1030,6 +1088,7 @@
 
             // Limpiar cualquier dato previo en la tabla
             var table = $('#table_historias_pc').DataTable();
+            table.order([3, 'desc']).draw();
             table.clear().draw();
 
             // Realizar la solicitud AJAX para obtener los registros de historia
@@ -1068,5 +1127,23 @@
                 }
             });
         });
+
+        const checkbox = document.getElementById('en-uso-mantenimineto');
+        const detalleInput = document.getElementById('div-detalle-mant');
+
+        checkbox.addEventListener('change', function() {
+            const div = detalleInput.querySelector('div');
+            const input = div.querySelector(
+                'input'); // Suponiendo que es un input el que quieres hacer requerido
+
+            if (checkbox.checked) {
+                div.style.display = "block"; // Muestra el div
+                input.setAttribute('required', 'required'); // Hace el campo requerido
+            } else {
+                div.style.display = "none"; // Oculta el div
+                input.removeAttribute('required'); // Quita el atributo requerido
+            }
+        });
+
     });
 </script>

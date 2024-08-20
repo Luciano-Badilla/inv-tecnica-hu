@@ -43,7 +43,7 @@
                             </div>
                             <div class="hidden space-x-8 sm:-my-px sm:flex">
                                 <x-dropdown-link :href="route('gest_componentes')" :active="request()->routeIs('gest_componentes')">
-                                    {{ __('Stock Comp.') }}
+                                    {{ __('Stock') }}
                                 </x-dropdown-link>
                             </div>
                             @if (Auth::user()->rol->nombre == 'Administrador')
@@ -63,7 +63,14 @@
                             @if (Auth::user()->rol->nombre == 'Administrador')
                             <div class="hidden space-x-8 sm:-my-px sm:flex">
                                 <x-dropdown-link :href="route('gest_tipo_componente')" :active="request()->routeIs('gest_tipo_componente')">
-                                    {{ __('Tipos Componente') }}
+                                    {{ __('Categorias') }}
+                                </x-dropdown-link>
+                            </div>
+                            @endif
+                            @if (Auth::user()->rol->nombre == 'Administrador')
+                            <div class="hidden space-x-8 sm:-my-px sm:flex">
+                                <x-dropdown-link :href="route('gest_state')" :active="request()->routeIs('gest_state')">
+                                    {{ __('Estados') }}
                                 </x-dropdown-link>
                             </div>
                             @endif

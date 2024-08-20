@@ -80,7 +80,7 @@
                             <!-- Mostrar errores de validación generales -->
                             <div style="display: flex; flex-direction: row; gap: 20px;">
                                 <div class="mb-3" style="flex: 1;">
-                                    <label for="addNombre" class="form-label">Componente:</label>
+                                    <label for="addNombre" class="form-label">Nombre:</label>
                                     <input type="text" class="form-control @error('addNombre') is-invalid @enderror"
                                         id="addNombre" name="addNombre"
                                         style="border: 1px solid gray; border-radius: 5px;" required>
@@ -96,10 +96,10 @@
                             </div>
                             <div style="display: flex; flex-direction: row; gap: 20px;">
                                 <div class="mb-3" style="flex: 1;">
-                                    <label for="addTipo" class="form-label">Tipo:</label>
+                                    <label for="addTipo" class="form-label">Categoria:</label>
                                     <select class="form-control @error('addTipo') is-invalid @enderror" id="addTipo"
                                         name="addTipo" style="border: 1px solid gray; border-radius: 5px;" required>
-                                        <option value="">Seleccionar un tipo</option>
+                                        <option value="">Seleccionar una categoria</option>
                                         @foreach ($tipos as $tipo)
                                             <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
                                             <!-- Agrega más opciones según sea necesario -->
@@ -154,7 +154,8 @@
                                         <option value="">Selecciona un componente</option>
                                         @foreach ($componentes as $componente)
                                             <option value="{{ $componente->id }}"
-                                                data-addStock="{{ $componente->stock }}">{{ $componente->nombre." - ".($componente->deposito->nombre ?? 'no asignado') }}
+                                                data-addStock="{{ $componente->stock }}">
+                                                {{ $componente->nombre. ' - ' . $componente->estado->nombre . ' - ' . ($componente->deposito->nombre ?? 'no asignado') }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -210,7 +211,8 @@
                                         <option value="">Selecciona un componente</option>
                                         @foreach ($componentes as $componente)
                                             <option value="{{ $componente->id }}"
-                                                data-removeStock="{{ $componente->stock }}">{{ $componente->nombre." - ".($componente->deposito->nombre ?? 'no asignado') }}
+                                                data-removeStock="{{ $componente->stock }}">
+                                                {{ $componente->nombre. ' - ' . $componente->estado->nombre . ' - ' . ($componente->deposito->nombre ?? 'no asignado') }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -268,18 +270,18 @@
                             <div style="display: flex; flex-direction: row; gap: 20px;">
                                 <div class="mb-3" style="flex: 1;">
                                     <input type="hidden" name="editId" id="editId">
-                                    <label for="editNombre" class="form-label">Componente:</label>
+                                    <label for="editNombre" class="form-label">Nombre:</label>
                                     <input type="text"
                                         class="form-control @error('editNombre') is-invalid @enderror"
                                         id="editNombre" name="editNombre"
                                         style="border: 1px solid gray; border-radius: 5px;" required>
                                 </div>
                                 <div class="mb-3" style="flex: 1;">
-                                    <label for="editTipo" class="form-label">Tipo:</label>
+                                    <label for="editTipo" class="form-label">Categoria:</label>
                                     <select class="form-control @error('editTipo') is-invalid @enderror"
                                         id="editTipo" name="editTipo"
                                         style="border: 1px solid gray; border-radius: 5px;" required>
-                                        <option>Selecciones un tipo</option>
+                                        <option>Selecciones una categoria</option>
                                         @foreach ($tipos as $tipo)
                                             <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
                                             <!-- Agrega más opciones según sea necesario -->
@@ -332,7 +334,8 @@
                             </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal" aria-label="Close">No</button>
+                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal"
+                            aria-label="Close">No</button>
                         <button type="submit" class="btn btn-danger">Eliminar</button>
                         </form>
                     </div>
@@ -363,7 +366,8 @@
                                         <option value="">Selecciona un componente</option>
                                         @foreach ($componentes as $componente)
                                             <option value="{{ $componente->id }}"
-                                                data-stock="{{ $componente->stock }}">{{ $componente->nombre." - ".($componente->deposito->nombre ?? 'no asignado') }}
+                                                data-stock="{{ $componente->stock }}">
+                                                {{ $componente->nombre. ' - ' . $componente->estado->nombre . ' - ' . ($componente->deposito->nombre ?? 'no asignado') }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -405,6 +409,83 @@
                                     <input type="text"
                                         class="form-control @error('transferMotivo') is-invalid @enderror"
                                         id="transferMotivo" name="transferMotivo"
+                                        style="border: 1px solid gray; border-radius: 5px;" required>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-dark">Transferir</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="TransferStateModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Cambiar estado componentes</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="display: flex; justify-content: center;">
+                        <form action="{{ route('state_componentes') }}" method="POST" id="transferStateForm"
+                            style="display: flex; flex-direction: column; gap: 20px;">
+                            @csrf
+                            <div style="display: flex; flex-direction: row; gap: 20px;">
+                                <div class="mb-3" style="flex: 1;">
+                                    <label for="transferStateNombre" class="form-label">Componente:</label>
+                                    <select class="form-control @error('transferStateNombre') is-invalid @enderror"
+                                        id="transferStateNombre" name="transferStateNombre"
+                                        style="border: 1px solid gray; border-radius: 5px;" required>
+                                        <option value="">Selecciona un componente</option>
+                                        @foreach ($componentes as $componente)
+                                            <option value="{{ $componente->id }}"
+                                                data-statestock="{{ $componente->stock }}">
+                                                {{ ($componente->nombre ?? 'No asignado') . ' - ' . ($componente->estado->nombre ?? 'No asignado') . ' - ' . ($componente->deposito->nombre ?? 'No asignado') }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                </div>
+                                <div class="mb-3" style="flex: 1;">
+                                    <label for="transferStateEstado" class="form-label">Estado:</label>
+                                    <select class="form-control @error('transferStateEstado') is-invalid @enderror"
+                                        id="transferStateEstado" name="transferStateEstado"
+                                        style="border: 1px solid gray; border-radius: 5px;" required>
+                                        <option value="">Selecciona un deposito</option>
+                                        @foreach ($estados as $estado)
+                                            <option value="{{ $estado->id }}">
+                                                {{ $estado->nombre }}</option>
+                                        @endforeach
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: row; gap: 20px;">
+                                <div class="mb-3" style="flex: 1;">
+                                    <label for="transferStateStock" class="form-label">Stock a cambiar estado:</label>
+                                    <div class="input-group">
+                                        <input type="number"
+                                            class="form-control @error('transferStateStock') is-invalid @enderror"
+                                            id="transferStateStock" name="transferStateStock"
+                                            style="border: 1px solid gray; border-top-left-radius: 5px; border-bottom-left-radius: 5px;"
+                                            min="0" required readonly>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary all-state-button" type="button"
+                                                style="border: 1px solid gray;" disabled>Todo</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 20px;">
+                                <div class="mb-3" style="flex: 1;">
+                                    <label for="transferStateMotivo" class="form-label">Motivo:</label>
+                                    <input type="text"
+                                        class="form-control @error('transferStateMotivo') is-invalid @enderror"
+                                        id="transferStateMotivo" name="transferStateMotivo"
                                         style="border: 1px solid gray; border-radius: 5px;" required>
                                 </div>
                             </div>
@@ -472,9 +553,10 @@
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
-                                    <th>Tipo</th>
+                                    <th>Categoria</th>
                                     <th>Deposito</th>
                                     <th>Stock</th>
+                                    <th>Estado</th>
                                     <th>Opciones</th>
                                 </tr>
                             </thead>
@@ -482,9 +564,11 @@
                                 @foreach ($componentes as $componente)
                                     <tr>
                                         <td><b>{{ $componente->nombre }}</b></td>
-                                        <td><b>Deposito: {{ $componente->deposito->nombre ?? 'no asignado' }}</b></td>
+                                        <td><b>Categoria:
+                                                {{ $componente->tipo->nombre ?? 'Categoria no asignada' }}</b></td>
+                                        <td><b>Deposito: {{ $componente->deposito->nombre ?? 'No asignado' }}</b></td>
                                         <td><b>Stock: {{ $componente->stock }}</b></td>
-                                        <td><b>Tipo: {{ $componente->tipo->nombre ?? 'Tipo no asignado' }}</b></td>
+                                        <td><b>Estado: {{ $componente->estado->nombre ?? 'No asignado' }}</b></td>
 
 
                                         <td>
@@ -580,7 +664,7 @@
         const transferStockInput = document.getElementById('transferStock');
         const addButton = document.querySelector('.all-button');
         const selectedOption = this.options[this.selectedIndex];
-        const stock = selectedOption.getAttribute('data-stock');
+        const stock = selectedOption.getAttribute('data-statestock');
 
         if (this.value) {
             transferStockInput.removeAttribute('readonly');
@@ -591,12 +675,39 @@
             addButton.setAttribute('disabled', true);
         }
     });
+
     document.querySelector('.all-button').addEventListener('click', function() {
         if (!this.hasAttribute('disabled')) {
             const transferStockInput = document.getElementById('transferStock');
             const selectedOption = document.getElementById('transferNombre').options[document.getElementById(
                 'transferNombre').selectedIndex];
             const stock = selectedOption.getAttribute('data-stock');
+            transferStockInput.value = stock; // Establecer el valor al stock máximo
+        }
+    });
+
+    document.getElementById('transferStateNombre').addEventListener('change', function() {
+        const transferStockInput = document.getElementById('transferStateStock');
+        const addButton = document.querySelector('.all-state-button');
+        const selectedOption = this.options[this.selectedIndex];
+        const stock = selectedOption.getAttribute('data-statestock');
+
+        if (this.value) {
+            transferStockInput.removeAttribute('readonly');
+            addButton.removeAttribute('disabled');
+            transferStockInput.max = stock; // Opcionalmente, puedes establecer un valor máximo
+        } else {
+            transferStockInput.setAttribute('readonly', true);
+            addButton.setAttribute('disabled', true);
+        }
+    });
+
+    document.querySelector('.all-state-button').addEventListener('click', function() {
+        if (!this.hasAttribute('disabled')) {
+            const transferStockInput = document.getElementById('transferStateStock');
+            const selectedOption = document.getElementById('transferStateNombre').options[document.getElementById(
+                'transferStateNombre').selectedIndex];
+            const stock = selectedOption.getAttribute('data-statestock');
             transferStockInput.value = stock; // Establecer el valor al stock máximo
         }
     });

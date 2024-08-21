@@ -286,7 +286,8 @@ class ComponenteController extends Controller
         $motivo_attr,
         $pc_iden_attr,
         $pc_nombre_attr,
-        $need_historia
+        $need_historia,
+        $mantenimiento
     ) {
         if ($id_attr) {
             $user = Auth::user();
@@ -299,9 +300,6 @@ class ComponenteController extends Controller
 
             // Encontrar el componente actual
             $componente = ComponenteModel::find($id);
-
-            // Obtener el estado actual del componente
-            $estadoActual = EstadoComponenteModel::find($componente->estado_id);
 
             // Reducir el stock del componente original
             if ($componente->stock >= $stockToTransfer) {
@@ -336,13 +334,24 @@ class ComponenteController extends Controller
                     $componenteResultado = $componenteDestino; // Guardar el componente destino
                 } else {
                     // Si el componente no existe en el estado destino, crear uno nuevo
-                    $newComponente = new ComponenteModel();
-                    $newComponente->nombre = $componente->nombre;
-                    $newComponente->tipo_id = $componente->tipo_id;
-                    $newComponente->estado_id = $estadoDestino;
-                    $newComponente->deposito_id = $componente->deposito_id;
-                    $newComponente->stock = $stockToTransfer;
-                    $newComponente->save();
+                    if ($estadoDestino == 5) {
+                        $newComponente = new ComponenteModel();
+                        $newComponente->nombre = $componente->nombre;
+                        $newComponente->tipo_id = $componente->tipo_id;
+                        $newComponente->estado_id = $estadoDestino;
+                        $newComponente->deposito_id = null;
+                        $newComponente->stock = $stockToTransfer;
+                        $newComponente->save();
+                    } else {
+                        $newComponente = new ComponenteModel();
+                        $newComponente->nombre = $componente->nombre;
+                        $newComponente->tipo_id = $componente->tipo_id;
+                        $newComponente->estado_id = $estadoDestino;
+                        $newComponente->deposito_id = $componente->deposito_id;
+                        $newComponente->stock = $stockToTransfer;
+                        $newComponente->save();
+                    }
+
 
                     $componenteResultado = $newComponente; // Guardar el nuevo componente
                 }
@@ -350,12 +359,21 @@ class ComponenteController extends Controller
 
             // Registrar la transferencia en la historia
             if ($need_historia) {
-                $historia = new HistoriaModel();
-                $historia->tecnico = $user->name;
-                $historia->detalle = "uso " . $stockToTransfer . " " . $componente->nombre . "/s " . " para el armado de la PC: " . $pc_iden_attr . " - " . $pc_nombre_attr . ".";
-                $historia->motivo = $motivo;
-                $historia->tipo_id = 4; // Tipo de transferencia
-                $historia->save();
+                if ($mantenimiento) {
+                    $historia = new HistoriaModel();
+                    $historia->tecnico = $user->name;
+                    $historia->detalle = "uso " . $stockToTransfer . " " . $componente->nombre . "/s " . " en el mantenimieno de la PC: " . $pc_iden_attr . " - " . $pc_nombre_attr . ".";
+                    $historia->motivo = $motivo;
+                    $historia->tipo_id = 4; // Tipo de transferencia
+                    $historia->save();
+                } else {
+                    $historia = new HistoriaModel();
+                    $historia->tecnico = $user->name;
+                    $historia->detalle = "uso " . $stockToTransfer . " " . $componente->nombre . "/s " . " para el armado de la PC: " . $pc_iden_attr . " - " . $pc_nombre_attr . ".";
+                    $historia->motivo = $motivo;
+                    $historia->tipo_id = 4; // Tipo de transferencia
+                    $historia->save();
+                }
             }
 
             return $componenteResultado->id; // Devolver el ID del componente resultante

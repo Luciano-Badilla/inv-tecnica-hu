@@ -47,7 +47,7 @@
                         <div class="flex" style="display: flex; flex-direction: column; gap:10px">
                             <div class="flex" style="display: flex; flex-direction: column; gap:5px">
                                 <div class="flex" style="display: flex; flex-direction: row; gap:5px">
-                                    <h2><b>Identificador: </b></h2>
+                                    <h2><b>Nº Inventario: </b></h2>
                                     <p id="idenInfo"></p>
                                 </div>
                                 <div class="flex" style="display: flex; flex-direction: row; gap:5px">
@@ -123,10 +123,10 @@
                             </div>
                             <div style="display: flex; flex-direction: row;">
                                 <div class="mb-3" style="margin-right: 2.5%">
-                                    <label for="addIdentificador" class="form-label">Identificador:</label>
+                                    <label for="addIdentificador" class="form-label">Nº Inventario:</label>
                                     <input type="text"
                                         class="form-control @error('addIdentificador') is-invalid @enderror"
-                                        id="addIdentificador" name="addIdentificador" placeholder="Identificador"
+                                        id="addIdentificador" name="addIdentificador" placeholder="Nº Inventario"
                                         style="border: 1px solid gray; border-radius: 5px; max-width: 165px;" required>
                                 </div>
                                 <div class="mb-3" style="margin-right: 2.5%">
@@ -321,10 +321,10 @@
                             </div>
                             <div style="display: flex; flex-direction: row;">
                                 <div class="mb-3" style="margin-right: 2.5%">
-                                    <label for="editIdentificador" class="form-label">Identificador:</label>
+                                    <label for="editIdentificador" class="form-label">Nº Inventario:</label>
                                     <input type="text"
                                         class="form-control @error('editIdentificador') is-invalid @enderror"
-                                        id="editIdentificador" name="editIdentificador" placeholder="Identificador"
+                                        id="editIdentificador" name="editIdentificador" placeholder="Nº Inventario"
                                         style="border: 1px solid gray; border-radius: 5px; max-width: 165px;" required>
                                 </div>
                                 <div class="mb-3" style="margin-right: 2.5%">
@@ -643,7 +643,8 @@
                             style="margin-top:5%;margin-bottom:5%; flex-wrap:wrap; gap: 9px; justify-content:center">
 
                             @foreach ($pcs as $pc)
-                                <div class="card pc-card" data-nombre="{{ strtolower($pc->nombre) }}" data-id="{{ strtolower($pc->identificador) }}"
+                                <div class="card pc-card" data-nombre="{{ strtolower($pc->nombre) }}"
+                                    data-id="{{ strtolower($pc->identificador) }}"
                                     style="margin-top: -1.5%;max-width: 16%; display: flex; flex-direction: column; justify-content: space-between; height: auto;">
                                     <!-- Ajusta la altura según tus necesidades -->
                                     <span class="icon">
@@ -715,10 +716,12 @@
                                                 data-ramsobj="{{ $pc->componentes->where('tipo_id', 1) }}">
                                                 <i class="fa-solid fa-wrench"></i>
                                             </button>
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal" data-id="{{ $pc->id }}">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            @if (Auth::user()->rol->nombre == 'Super administrador')
+                                                <button class="btn btn-dark icon" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal" data-id="{{ $pc->id }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -743,7 +746,7 @@
             var searchTerm = $(this).val().toLowerCase();
 
             // Filtrar las tarjetas de PC
-            $('.pc-card').each(function() {
+            $('.card').each(function() {
                 var nombre = $(this).data('nombre');
                 var id = $(this).data('id');
 
@@ -1088,7 +1091,6 @@
 
             // Limpiar cualquier dato previo en la tabla
             var table = $('#table_historias_pc').DataTable();
-            table.order([3, 'desc']).draw();
             table.clear().draw();
 
             // Realizar la solicitud AJAX para obtener los registros de historia
@@ -1127,6 +1129,7 @@
                 }
             });
         });
+
 
         const checkbox = document.getElementById('en-uso-mantenimineto');
         const detalleInput = document.getElementById('div-detalle-mant');

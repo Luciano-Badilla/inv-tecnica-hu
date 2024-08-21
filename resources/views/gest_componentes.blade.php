@@ -155,7 +155,7 @@
                                         @foreach ($componentes as $componente)
                                             <option value="{{ $componente->id }}"
                                                 data-addStock="{{ $componente->stock }}">
-                                                {{ $componente->nombre. ' - ' . $componente->estado->nombre . ' - ' . ($componente->deposito->nombre ?? 'no asignado') }}
+                                                {{ $componente->nombre . ' - ' . $componente->estado->nombre . ' - ' . ($componente->deposito->nombre ?? 'no asignado') }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -212,7 +212,7 @@
                                         @foreach ($componentes as $componente)
                                             <option value="{{ $componente->id }}"
                                                 data-removeStock="{{ $componente->stock }}">
-                                                {{ $componente->nombre. ' - ' . $componente->estado->nombre . ' - ' . ($componente->deposito->nombre ?? 'no asignado') }}
+                                                {{ $componente->nombre . ' - ' . $componente->estado->nombre . ' - ' . ($componente->deposito->nombre ?? 'no asignado') }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -367,7 +367,7 @@
                                         @foreach ($componentes as $componente)
                                             <option value="{{ $componente->id }}"
                                                 data-stock="{{ $componente->stock }}">
-                                                {{ $componente->nombre. ' - ' . $componente->estado->nombre . ' - ' . ($componente->deposito->nombre ?? 'no asignado') }}
+                                                {{ $componente->nombre . ' - ' . $componente->estado->nombre . ' - ' . ($componente->deposito->nombre ?? 'no asignado') }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -525,7 +525,6 @@
                         <div class="icon">
                             <i class="ion ion-bag"></i>
                         </div>
-                        <a href="#" class="small-box-footer"><i class="fas fa-plus-circle"></i></a>
                     </div>
                     <div class="small-box bg-dark" style="margin: 5px;">
                         <div class="inner">
@@ -705,8 +704,9 @@
     document.querySelector('.all-state-button').addEventListener('click', function() {
         if (!this.hasAttribute('disabled')) {
             const transferStockInput = document.getElementById('transferStateStock');
-            const selectedOption = document.getElementById('transferStateNombre').options[document.getElementById(
-                'transferStateNombre').selectedIndex];
+            const selectedOption = document.getElementById('transferStateNombre').options[document
+                .getElementById(
+                    'transferStateNombre').selectedIndex];
             const stock = selectedOption.getAttribute('data-statestock');
             transferStockInput.value = stock; // Establecer el valor al stock máximo
         }

@@ -37,10 +37,15 @@
 
                         <x-slot name="content">
                             <div class="hidden space-x-8 sm:-my-px sm:flex">
+                                <x-dropdown-link :href="route('dispositivos')" :active="request()->routeIs('dispositivos')">
+                                    {{ __('Dispositivos') }}
+                                </x-dropdown-link>
+                            </div><!--
+                            <div class="hidden space-x-8 sm:-my-px sm:flex">
                                 <x-dropdown-link :href="route('gest_pc')" :active="request()->routeIs('gest_pc')">
                                     {{ __('PCs') }}
                                 </x-dropdown-link>
-                            </div>
+                            </div>-->
                             <div class="hidden space-x-8 sm:-my-px sm:flex">
                                 <x-dropdown-link :href="route('gest_componentes')" :active="request()->routeIs('gest_componentes')">
                                     {{ __('Stock') }}

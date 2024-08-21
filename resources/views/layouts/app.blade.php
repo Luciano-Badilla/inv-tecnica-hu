@@ -14,7 +14,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -780,6 +780,9 @@
         integrity="sha512-xhoRSwFWTkMiZ8nAqphZ5StVrNz/7jJS0aVvPpQb0MF7FO64PngXfpHPkWwDpX+UlLUzLDmte9UpjilUEcQ+Ig=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
     <footer>
         <script>
             $(document).ready(function() {
@@ -1032,39 +1035,41 @@
 
                     // Busca y elimina las opciones con el nombre especificado
                     modal.find('#editMotherboard option').each(function() {
-                        if ($(this).text() === motherboardToRemove) {
+                        if ($(this).text() === motherboardToRemove + " - Actual") {
                             $(this).remove();
                         }
                     });
 
                     modal.find('#editProcesador option').each(function() {
-                        if ($(this).text() === procesadorToRemove) {
+                        if ($(this).text() === procesadorToRemove + " - Actual") {
                             $(this).remove();
                         }
                     });
 
                     modal.find('#editFuente option').each(function() {
-                        if ($(this).text() === fuenteToRemove) {
+                        if ($(this).text() === fuenteToRemove + " - Actual") {
                             $(this).remove();
                         }
                     });
 
                     modal.find('#editPlacavid option').each(function() {
-                        if ($(this).text() === placavidToRemove) {
+                        if ($(this).text() === placavidToRemove + " - Actual") {
                             $(this).remove();
                         }
                     });
 
                     if (Motherboard.stock == 0 || Motherboard.estado_id == 5) {
                         modal.find('#editMotherboard').append(
-                            '<option value="' + Motherboard.id + '"  selected>' + Motherboard.nombre + " - Actual" +
+                            '<option value="' + Motherboard.id + '"  selected>' + Motherboard.nombre +
+                            " - Actual" +
                             '</option>');
                     } else {
                         modal.find('#editMotherboard').val(Motherboard.id);
                     }
                     if (Procesador.stock == 0 || Procesador.estado_id == 5) {
                         modal.find('#editProcesador').append(
-                            '<option value="' + Procesador.id + '" selected>' + Procesador.nombre + " - Actual" +
+                            '<option value="' + Procesador.id + '" selected>' + Procesador.nombre +
+                            " - Actual" +
                             '</option>');
                     } else {
                         modal.find('#editProcesador').val(Procesador.id);
@@ -1080,7 +1085,8 @@
 
                     if (Placavid.stock == 0 || Placavid.estado_id == 5) {
                         modal.find('#editPlacavid').append(
-                            '<option value="' + Placavid.id + '" selected>' + Placavid.nombre + " - Actual" +
+                            '<option value="' + Placavid.id + '" selected>' + Placavid.nombre +
+                            " - Actual" +
                             '</option>');
                     } else {
                         modal.find('#editPlacavid').val(Placavid.id);

@@ -8,6 +8,10 @@ use App\Http\Controllers\ComponenteController;
 use App\Http\Controllers\HistoriaController;
 use App\Http\Controllers\PcController;
 use App\Http\Controllers\EstadoController;
+use App\Http\Controllers\DispositivosController;
+use App\Http\Controllers\ImpresoraController;
+use App\Http\Controllers\TelefonoController;
+use App\Http\Controllers\RouterController;
 use Illuminate\Support\Facades\Route;
 
 ///////////////////////////
@@ -22,6 +26,11 @@ Route::get('/inv-tecnica', function () {
 Route::get('/inv-tecnica/inicio', function () {
     return view('inicio');
 })->middleware(['auth', 'verified'])->name('inicio');
+
+
+Route::get('/inv-tecnica/dispositivos', [DispositivosController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dispositivos');
 
 Route::get('/inv-tecnica/gest_tipo_componente', [TipoComponente::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -99,6 +108,45 @@ Route::patch('/inv-tecnica/gest_pc/patch', [PcController::class, 'edit'])
 
 Route::post('/inv-tecnica/gest_pc/delete', [PcController::class, 'delete'])
     ->name('delete_pc');
+
+Route::get('/inv-tecnica/gest_impresoras', [ImpresoraController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('gest_impresoras');
+
+Route::post('/inv-tecnica/gest_impresoras/store', [ImpresoraController::class, 'store'])
+    ->name('store_impresoras');
+
+Route::patch('/inv-tecnica/gest_impresoras/patch', [ImpresoraController::class, 'edit'])
+    ->name('edit_impresoras');
+
+Route::post('/inv-tecnica/gest_impresoras/delete', [ImpresoraController::class, 'delete'])
+    ->name('delete_impresoras');
+
+Route::get('/inv-tecnica/gest_telefonos', [TelefonoController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('gest_telefonos');
+
+Route::post('/inv-tecnica/gest_telefonos/store', [TelefonoController::class, 'store'])
+    ->name('store_telefonos');
+
+Route::patch('/inv-tecnica/gest_telefonos/patch', [TelefonoController::class, 'edit'])
+    ->name('edit_telefonos');
+
+Route::post('/inv-tecnica/gest_telefonos/delete', [TelefonoController::class, 'delete'])
+    ->name('delete_telefonos');
+
+Route::get('/inv-tecnica/gest_routers', [RouterController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('gest_routers');
+
+Route::post('/inv-tecnica/gest_routers/store', [RouterController::class, 'store'])
+    ->name('store_routers');
+
+Route::patch('/inv-tecnica/gest_routers/patch', [RouterController::class, 'edit'])
+    ->name('edit_routers');
+
+Route::post('/inv-tecnica/gest_routers/delete', [RouterController::class, 'delete'])
+    ->name('delete_routers');
 
 Route::get('/inv-tecnica/gest_pc/historia/{id}', [PcController::class, 'getHistoria']);
 

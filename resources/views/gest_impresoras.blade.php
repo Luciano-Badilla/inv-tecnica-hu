@@ -337,6 +337,11 @@
                                     id="removeMotivo" name="removeMotivo"
                                     style="border: 1px solid gray; border-radius:5px" required>
                             </div>
+
+                            <p
+                                style="color: #d9534f; background-color: #f9e2e2; border: 1px solid #d43f3a; padding: 10px; border-radius: 5px;">
+                                El toner usado en esta impresora se devolvera al stock en el estado DISPONIBLE.
+                            </p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-dark" data-bs-dismiss="modal"
@@ -349,7 +354,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="historyPcModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        <div class="modal fade" id="historyImpModal" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content">
@@ -422,20 +427,20 @@
                                 </button>
                             </div>
                             <div>
-                                <input class="search_input" id="search_pc" type="text" placeholder="Buscar">
+                                <input class="search_input" id="buscador" type="text" placeholder="Buscar">
                             </div>
                         </div>
                         <div class="flex" id="div-impresora"
                             style="margin-top:5%;margin-bottom:5%; flex-wrap:wrap; gap: 9px; justify-content:center">
 
                             @foreach ($impresoras as $impresora)
-                                <div class="card impresora-card" data-nombre="{{ strtolower($impresora->nombre) }}"
+                                <div class="card imp" data-nombre="{{ strtolower($impresora->nombre) }}"
                                     data-id="{{ strtolower($impresora->identificador) }}"
                                     style="margin-top: -1.5%;max-width: 16%; display: flex; flex-direction: column; justify-content: space-between; height: auto;">
                                     <!-- Ajusta la altura según tus necesidades -->
                                     <span class="icon">
-                                        <img src="https://simpleicon.com/wp-content/uploads/printer-11.png" alt="PC Icon"
-                                            style="filter:invert(100%)">
+                                        <img src="https://simpleicon.com/wp-content/uploads/printer-11.png"
+                                            alt="PC Icon" style="filter:invert(100%)">
                                     </span>
                                     <div style="display: flex; align-items:center;">
                                         <h4>{{ $impresora->nombre }}</h4>
@@ -466,41 +471,34 @@
 
                                     <div style="margin-top: auto;">
                                         <div class="flex" style="gap: 1px; justify-content: center;">
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
-                                                data-bs-target="#historyPcModal" data-id="{{ $impresora->id }}">
-                                                <i class="fa-solid fa-book"></i>
-                                            </button>
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
-                                                data-bs-target="#infoPcModal" data-id="{{ $impresora->id }}"
+
+                                            <button class="btn btn-dark icon infoBtn" data-bs-toggle="modal"
+                                                data-bs-target="#infoImpModal" data-id="{{ $impresora->id }}"
                                                 data-identificador="{{ $impresora->identificador }}"
-                                                data-nombre="{{ $impresora->nombre }}" data-ip="{{ $impresora->ip }}"
+                                                data-nombre="{{ $impresora->nombre }}"
+                                                data-ip="{{ $impresora->ip }}"
                                                 data-area="{{ $impresora->area->nombre ?? 'Área no asignada' }}"
                                                 data-deposito="{{ $impresora->deposito->nombre ?? 'Depósito no asignado' }}"
                                                 data-enuso="{{ $impresora->area && $impresora->area->nombre ? 'true' : 'false' }}"
-                                                data-mother="{{ $impresora->componentes->firstWhere('tipo_id', 5)->nombre ?? '' }}"
-                                                data-proce="{{ $impresora->componentes->firstWhere('tipo_id', 4)->nombre ?? '' }}"
-                                                data-fuente="{{ $impresora->componentes->firstWhere('tipo_id', 2)->nombre ?? '' }}"
-                                                data-placavid="{{ $impresora->componentes->firstWhere('tipo_id', 7)->nombre ?? 'Sin placa de video' }}"
-                                                data-discos="{{ $impresora->componentes->whereIn('tipo_id', [6, 3])->pluck('nombre')->implode(', ') }}"
-                                                data-rams="{{ $impresora->componentes->where('tipo_id', 1)->pluck('nombre')->implode(', ') }}">
+                                                data-toner="{{ ComponenteModel::find($impresora->toner_id)->nombre ?? 'Toner no asignado' }}"
+                                                data-marca="{{ $impresora->marca_modelo ?? '' }}">
                                                 <i class="fas fa-circle-info"></i>
                                             </button>
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
-                                                data-bs-target="#editPcModal" data-id="{{ $impresora->id }}"
+                                            <button class="btn btn-dark icon maintenanceBtn" data-bs-toggle="modal"
+                                                data-bs-target="#editImpModal" data-id="{{ $impresora->id }}"
                                                 data-identificador="{{ $impresora->identificador }}"
-                                                data-nombre="{{ $impresora->nombre }}" data-ip="{{ $impresora->ip }}"
-                                                data-area="{{ $impresora->area_id }}"
-                                                data-deposito="{{ $impresora->deposito_id }}"
-                                                data-enuso="{{ $impresora->area_id ? 'true' : 'false' }}"
-                                                data-mother="{{ $impresora->componentes->firstWhere('tipo_id', 5) }}"
-                                                data-proce="{{ $impresora->componentes->firstWhere('tipo_id', 4) }}"
-                                                data-fuente="{{ $impresora->componentes->firstWhere('tipo_id', 2) }}"
-                                                data-placavid="{{ $impresora->componentes->firstWhere('tipo_id', 7) }}"
-                                                data-discosids="{{ $impresora->componentes->whereIn('tipo_id', [6, 3])->pluck('id')->implode(', ') }}"
-                                                data-discosobj='@json($impresora->componentes->whereIn('tipo_id', [6, 3]))'
-                                                data-ramsids="{{ $impresora->componentes->where('tipo_id', 1)->pluck('id')->implode(', ') }}"
-                                                data-ramsobj="{{ $impresora->componentes->where('tipo_id', 1) }}">
+                                                data-nombre="{{ $impresora->nombre }}"
+                                                data-ip="{{ $impresora->ip }}"
+                                                data-area="{{ $impresora->area->id ?? 'Área no asignada' }}"
+                                                data-deposito="{{ $impresora->deposito->id ?? 'Depósito no asignado' }}"
+                                                data-enuso="{{ $impresora->area && $impresora->area->nombre ? 'true' : 'false' }}"
+                                                data-toner="{{ ComponenteModel::find($impresora->toner_id) }}"
+                                                data-marca="{{ $impresora->marca_modelo ?? '' }}">
                                                 <i class="fa-solid fa-wrench"></i>
+                                            </button>
+                                            <button class="btn btn-dark icon historyBtn" data-bs-toggle="modal"
+                                                data-bs-target="#historyImpModal" data-id="{{ $impresora->id }}">
+                                                <i class="fa-solid fa-book"></i>
                                             </button>
                                             @if (Auth::user()->rol->nombre == 'Super administrador')
                                                 <button class="btn btn-dark icon" data-bs-toggle="modal"
@@ -528,16 +526,11 @@
 <script>
     $(document).ready(function() {
 
-        $('#search_pc').on('input', function() {
-            var searchTerm = $(this).val().toLowerCase();
-
-            // Filtrar las tarjetas de PC
-            $('.card').each(function() {
-                var nombre = $(this).data('nombre');
-                var id = $(this).data('id');
-
-                // Mostrar la tarjeta si el nombre o la IP contiene el término de búsqueda
-                if (nombre.includes(searchTerm) || id.includes(searchTerm)) {
+        $('#buscador').on('keyup', function() {
+            var query = $(this).val().toLowerCase();
+            $('#div-impresora .imp').each(function() {
+                var text = $(this).text().toLowerCase();
+                if (text.indexOf(query) !== -1) {
                     $(this).show();
                 } else {
                     $(this).hide();
@@ -545,23 +538,24 @@
             });
         });
 
-        $('#historyPcModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget); // Botón que abrió el modal
-            var componenteId = button.data('id'); // Obtener el ID del componente
+        var modalHandlerAttached = false;
 
-            // Limpiar cualquier dato previo en la tabla
+        $('#historyImpModal').on('show.bs.modal', function(event) {
+            if (modalHandlerAttached) return;
+            modalHandlerAttached = true;
+
+            var button = $(event.relatedTarget);
+            var componenteId = button.data('id');
+
             var table = $('#table_historias_pc').DataTable();
-            table.order([3, 'desc']).draw();
             table.clear().draw();
+            table.order([3, 'desc']).draw();
 
-            // Realizar la solicitud AJAX para obtener los registros de historia
             $.ajax({
-                url: '/inv-tecnica/gest_pc/historia/' +
-                    componenteId, // Cambia la URL a la ruta de tu controlador
+                url: '/inv-tecnica/gest_pc/historia/' + componenteId,
                 method: 'GET',
                 success: function(response) {
                     var data = [];
-
                     response.historia.forEach(function(historia) {
                         var fechaFormateada = new Date(historia.created_at)
                             .toLocaleDateString('es-ES', {
@@ -582,7 +576,6 @@
                         ]);
                     });
 
-                    // Añadir los datos a la tabla y refrescarla
                     table.rows.add(data).draw();
                 },
                 error: function() {
@@ -590,6 +583,10 @@
                 }
             });
         });
+
+        
+        
+
 
         $('#editImpModal').on('show.bs.modal', function(event) {
             var modal = $(this);
@@ -713,6 +710,54 @@
             }
             modal.find('#tonerInfo').text(Toner);
         });
+
+        // Manejador para el click en el div con la clase 'card'
+        $('.card').on('click', function() {
+            // Dispara el click en el botón infoBtn
+            $(this).find('.infoBtn').trigger('click');
+        });
+
+        // Manejador para el click en el botón infoBtn
+        $('.infoBtn').on('click', function(event) {
+            // Evita que el modal se abra inmediatamente
+            event.preventDefault();
+
+            // Cargar los datos en el modal
+            const modal = $('#infoImpModal');
+            modal.find('#idenInfo').text($(this).data('identificador'));
+            modal.find('#nombreInfo').text($(this).data('nombre'));
+            modal.find('#marcaInfo').text($(this).data('marca'));
+            modal.find('#ipInfo').text($(this).data('ip'));
+            if($(this).data('enuso')){
+                modal.find('#titleAsig').text("Area:");
+                modal.find('#infoAsig').text($(this).data('area'));
+
+            }else{
+                modal.find('#titleAsig').text("Deposito:");
+                modal.find('#infoAsig').text($(this).data('deposito'));
+
+            }
+            modal.find('#tonerInfo').text($(this).data('toner'));
+
+            // Mostrar el modal
+            modal.modal('show');
+        });
+
+        // Manejador para el click en el botón de mantenimiento
+        $('.maintenanceBtn').on('click', function(event) {
+            event.stopPropagation();
+            // Código específico para el botón de mantenimiento
+        });
+
+        // Manejador para el click en el botón de historial
+        $('.historyBtn').on('click', function(event) {
+            event.stopPropagation();
+            // Código específico para el botón de historial
+        });
+
+
+
+
 
     });
 </script>

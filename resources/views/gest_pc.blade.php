@@ -551,6 +551,11 @@
                                     id="removeMotivo" name="removeMotivo"
                                     style="border: 1px solid gray; border-radius:5px" required>
                             </div>
+
+                            <p
+                                style="color: #d9534f; background-color: #f9e2e2; border: 1px solid #d43f3a; padding: 10px; border-radius: 5px;">
+                                Todos los componentes usados en esta PC se devolveran al stock en el estado DISPONIBLE.
+                            </p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-dark" data-bs-dismiss="modal"
@@ -680,11 +685,7 @@
 
                                     <div style="margin-top: auto;">
                                         <div class="flex" style="gap: 1px; justify-content: center;">
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
-                                                data-bs-target="#historyPcModal" data-id="{{ $pc->id }}">
-                                                <i class="fa-solid fa-book"></i>
-                                            </button>
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
+                                            <button class="btn btn-dark icon infoBtn" data-bs-toggle="modal"
                                                 data-bs-target="#infoPcModal" data-id="{{ $pc->id }}"
                                                 data-identificador="{{ $pc->identificador }}"
                                                 data-nombre="{{ $pc->nombre }}" data-ip="{{ $pc->ip }}"
@@ -699,7 +700,7 @@
                                                 data-rams="{{ $pc->componentes->where('tipo_id', 1)->pluck('nombre')->implode(', ') }}">
                                                 <i class="fas fa-circle-info"></i>
                                             </button>
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
+                                            <button class="btn btn-dark icon maintenanceBtn" data-bs-toggle="modal"
                                                 data-bs-target="#editPcModal" data-id="{{ $pc->id }}"
                                                 data-identificador="{{ $pc->identificador }}"
                                                 data-nombre="{{ $pc->nombre }}" data-ip="{{ $pc->ip }}"
@@ -715,6 +716,10 @@
                                                 data-ramsids="{{ $pc->componentes->where('tipo_id', 1)->pluck('id')->implode(', ') }}"
                                                 data-ramsobj="{{ $pc->componentes->where('tipo_id', 1) }}">
                                                 <i class="fa-solid fa-wrench"></i>
+                                            </button>
+                                            <button class="btn btn-dark icon historyBtn" data-bs-toggle="modal"
+                                                data-bs-target="#historyPcModal" data-id="{{ $pc->id }}">
+                                                <i class="fa-solid fa-book"></i>
                                             </button>
                                             @if (Auth::user()->rol->nombre == 'Super administrador')
                                                 <button class="btn btn-dark icon" data-bs-toggle="modal"
@@ -1085,7 +1090,11 @@
             updateOptionsDiscModal2();
         }
 
+        var modalHandlerAttached = false;
+
         $('#historyPcModal').on('show.bs.modal', function(event) {
+            if (modalHandlerAttached) return;
+            modalHandlerAttached = true;
             var button = $(event.relatedTarget); // Botón que abrió el modal
             var componenteId = button.data('id'); // Obtener el ID del componente
 
@@ -1130,6 +1139,10 @@
             });
         });
 
+        $('#historyPcModal').on('hide.bs.modal', function() {
+            modalHandlerAttached = false;
+        });
+
 
         const checkbox = document.getElementById('en-uso-mantenimineto');
         const detalleInput = document.getElementById('div-detalle-mant');
@@ -1147,6 +1160,53 @@
                 input.removeAttribute('required'); // Quita el atributo requerido
             }
         });
+
+        // Manejador para el click en el div con la clase 'card'
+        $('.card').on('click', function() {
+            // Dispara el click en el botón infoBtn dentro del div
+            $(this).find('.infoBtn').trigger('click');
+        });
+
+        // Manejador para el click en el botón infoBtn
+        $('.infoBtn').on('click', function(event) {
+            // Evita que el modal se abra inmediatamente
+            event.preventDefault();
+
+            // Cargar los datos en el modal
+            const modal = $('#infoPcModal');
+            modal.find('#idenInfo').text($(this).data('identificador'));
+            modal.find('#nombreInfo').text($(this).data('nombre'));
+            modal.find('#ipInfo').text($(this).data('ip'));
+            if($(this).data('enuso')){
+                modal.find('#titleAsig').text('Area:');
+                modal.find('#infoAsig').text($(this).data('area'));
+            }else{
+                modal.find('#titleAsig').text('Deposito:');
+                modal.find('#infoAsig').text($(this).data('deposito'));
+            }
+            modal.find('#motherInfo').text($(this).data('mother'));
+            modal.find('#proceInfo').text($(this).data('proce'));
+            modal.find('#discosInfo').text($(this).data('discos'));
+            modal.find('#ramsInfo').text($(this).data('rams'));
+            modal.find('#fuenteInfo').text($(this).data('fuente'));
+            modal.find('#placavidInfo').text($(this).data('placavid'));
+
+            // Mostrar el modal
+            modal.modal('show');
+        });
+
+        // Manejador para el click en el botón de mantenimiento
+        $('.maintenanceBtn').on('click', function(event) {
+            event.stopPropagation();
+            // Código específico para el botón de mantenimiento
+        });
+
+        // Manejador para el click en el botón de historial
+        $('.historyBtn').on('click', function(event) {
+            event.stopPropagation();
+            // Código específico para el botón de historial
+        });
+
 
     });
 </script>

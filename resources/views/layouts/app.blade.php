@@ -278,6 +278,7 @@
             border-radius: 15px;
             position: relative;
             transition: box-shadow .25s;
+            cursor: pointer;
 
             &::before {
                 content: '';
@@ -293,6 +294,14 @@
                 display: table;
                 padding: 8px;
                 width: 35%;
+            }
+
+            .iconHome {
+                z-index: 2;
+                position: relative;
+                display: table;
+                padding: 8px;
+                width: 40%;
             }
 
             h4 {
@@ -823,7 +832,7 @@
                     '</button>'
                 );
 
-                $("#table_componentes").DataTable({
+                var comp_table = $("#table_componentes").DataTable({
                     initComplete: function() {
                         var api = this.api();
                         // Añadir el botón después de que DataTables se haya inicializado
@@ -878,6 +887,46 @@
                     }
                 });
 
+                $('#filtro-deposito').on('change', function() {
+                    comp_table.column(2).search(this.value).draw();
+                });
+
+                $('#filtro-estado').on('change', function() {
+                    comp_table.column(4).search(this.value).draw();
+                });
+
+                $('#filtro-categoria').on('change', function() {
+                    comp_table.column(0).search(this.value).draw();
+                });
+
+                // Función para extraer el número del string "Stock: XX" en formato HTML
+                function extractStockValue(stockHtml) {
+                    var match = stockHtml.match(/Stock:\s*(\d+)/);
+                    return match ? parseInt(match[1], 10) : 0;
+                }
+
+                // Filtros personalizados
+                $.fn.dataTable.ext.search.push(
+                    function(settings, data, dataIndex) {
+                        var stockHtml = data[3]; // Índice de la columna de stock (asegúrate de que sea el correcto)
+                        var stock = extractStockValue(stockHtml);
+                        var filterValue = $('#filtro-stock').val();
+
+                        if (filterValue === 'poco-stock') {
+                            return stock > 0 && stock <= 20;
+                        } else if (filterValue === 'sin-stock') {
+                            return stock === 0;
+                        }
+                        return true; // Sin filtro
+                    }
+                );
+
+                // Evento de cambio del filtro
+                $('#filtro-stock').on('change', function() {
+                    comp_table.draw(); // Redibuja la tabla para aplicar el filtro
+                });
+
+
                 $("#table_historias").DataTable({
                     "order": [
                         [3, 'desc']
@@ -913,7 +962,7 @@
 
                 $("#table_historias_pc").DataTable({
                     "order": [
-                        [3, 'asc']
+                        [3, 'desc']
                     ],
                     "responsive": true,
                     "lengthChange": true,

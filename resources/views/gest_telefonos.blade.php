@@ -408,7 +408,8 @@
                             style="margin-top:5%;margin-bottom:5%; flex-wrap:wrap; gap: 9px; justify-content:center">
 
                             @foreach ($telefonos as $telefono)
-                                <div class="card telefono-card" data-nombre="{{ strtolower($telefono->nombre) }}"
+                                <div class="card telefono-card" data-bs-toggle="modal" data-bs-target="#infoTelModal"
+                                    data-nombre="{{ strtolower($telefono->nombre) }}"
                                     data-id="{{ strtolower($telefono->identificador) }}"
                                     style="margin-top: -1.5%;max-width: 16%; display: flex; flex-direction: column; justify-content: space-between; height: auto;">
                                     <!-- Ajusta la altura según tus necesidades -->
@@ -445,11 +446,8 @@
 
                                     <div style="margin-top: auto;">
                                         <div class="flex" style="gap: 1px; justify-content: center;">
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
-                                                data-bs-target="#historyPcModal" data-id="{{ $telefono->id }}">
-                                                <i class="fa-solid fa-book"></i>
-                                            </button>
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
+
+                                            <button class="btn btn-dark icon infoBtn" data-bs-toggle="modal"
                                                 data-bs-target="#infoTelModal" data-id="{{ $telefono->id }}"
                                                 data-identificador="{{ $telefono->identificador }}"
                                                 data-nombre="{{ $telefono->nombre }}" data-ip="{{ $telefono->ip }}"
@@ -460,7 +458,7 @@
                                                 data-marca="{{ $telefono->marca_modelo ?? '' }}">
                                                 <i class="fas fa-circle-info"></i>
                                             </button>
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
+                                            <button class="btn btn-dark icon maintenanceBtn" data-bs-toggle="modal"
                                                 data-bs-target="#editTelModal" data-id="{{ $telefono->id }}"
                                                 data-identificador="{{ $telefono->identificador }}"
                                                 data-nombre="{{ $telefono->nombre }}" data-ip="{{ $telefono->ip }}"
@@ -470,6 +468,10 @@
                                                 data-numero="{{ $telefono->numero }}"
                                                 data-marca="{{ $telefono->marca_modelo ?? '' }}">
                                                 <i class="fa-solid fa-wrench"></i>
+                                            </button>
+                                            <button class="btn btn-dark icon historyBtn" data-bs-toggle="modal"
+                                                data-bs-target="#historyPcModal" data-id="{{ $telefono->id }}">
+                                                <i class="fa-solid fa-book"></i>
                                             </button>
                                             @if (Auth::user()->rol->nombre == 'Super administrador')
                                                 <button class="btn btn-dark icon" data-bs-toggle="modal"
@@ -514,7 +516,11 @@
             });
         });
 
+        var modalHandlerAttached = false;
+    
         $('#historyPcModal').on('show.bs.modal', function(event) {
+            if (modalHandlerAttached) return;
+            modalHandlerAttached = true;
             var button = $(event.relatedTarget); // Botón que abrió el modal
             var componenteId = button.data('id'); // Obtener el ID del componente
 
@@ -558,6 +564,10 @@
                     alert('Error al cargar las historias.');
                 }
             });
+        });
+
+        $('#historyPcModal').on('hide.bs.modal', function() {
+            modalHandlerAttached = false;
         });
 
         $('#editTelModal').on('show.bs.modal', function(event) {
@@ -657,6 +667,50 @@
                 modal.find('#titleAsig').text("Deposito:");
                 modal.find('#infoAsig').text(Deposito);
             }
+        });
+
+        // Manejador para el click en el div con la clase 'card'
+        $('.card').on('click', function() {
+            // Dispara el click en el botón infoBtn dentro del div
+            $(this).find('.infoBtn').trigger('click');
+        });
+
+        // Manejador para el click en el botón infoBtn
+        $('.infoBtn').on('click', function(event) {
+            // Evita que el modal se abra inmediatamente
+            event.preventDefault();
+
+            // Cargar los datos en el modal
+            const modal = $('#infoTelModal');
+            modal.find('#idenInfo').text($(this).data('identificador'));
+            modal.find('#nombreInfo').text($(this).data('nombre'));
+            modal.find('#marcaInfo').text($(this).data('marca'));
+            modal.find('#numeroInfo').text($(this).data('numero'));
+            modal.find('#ipInfo').text($(this).data('ip'));
+            if($(this).data('enuso')){
+                modal.find('#titleAsig').text("Area:");
+                modal.find('#infoAsig').text($(this).data('area'));
+
+            }else{
+                modal.find('#titleAsig').text("Deposito:");
+                modal.find('#infoAsig').text($(this).data('deposito'));
+
+            }
+
+            // Mostrar el modal
+            modal.modal('show');
+        });
+
+        // Manejador para el click en el botón de mantenimiento
+        $('.maintenanceBtn').on('click', function(event) {
+            event.stopPropagation();
+            // Código específico para el botón de mantenimiento
+        });
+
+        // Manejador para el click en el botón de historial
+        $('.historyBtn').on('click', function(event) {
+            event.stopPropagation();
+            // Código específico para el botón de historial
         });
 
     });

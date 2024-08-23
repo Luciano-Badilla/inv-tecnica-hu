@@ -35,7 +35,7 @@
                             @csrf
                             <!-- Mostrar errores de validación generales -->
                             <div class="mb-3" style="flex: 1;">
-                                <label for="addNombre" class="form-label">Area:</label>
+                                <label for="addNombre" class="form-label">Estado:</label>
                                 <input type="text" class="form-control @error('addNombre') is-invalid @enderror"
                                     id="addNombre" name="addNombre" style="border: 1px solid gray; border-radius: 5px;"
                                     required>
@@ -65,17 +65,16 @@
 
                             <div class="mb-3" style="flex: 1;">
                                 <input type="hidden" id="editId" name="editId">
-                                <label for="editNombre" class="form-label">Area:</label>
+                                <label for="editNombre" class="form-label">Estado:</label>
                                 <input type="text" class="form-control @error('editNombre') is-invalid @enderror"
                                     id="editNombre" name="editNombre"
                                     style="border: 1px solid gray; border-radius: 5px;" required>
                             </div>
                             <div class="mb-3" style="flex: 1;">
                                 <label for="editMotivo" class="form-label">Motivo:</label>
-                                <input type="text"
-                                    class="form-control @error('editMotivo') is-invalid @enderror" id="editMotivo"
-                                    name="editMotivo" style="border: 1px solid gray; border-radius: 5px;"
-                                    required>
+                                <input type="text" class="form-control @error('editMotivo') is-invalid @enderror"
+                                    id="editMotivo" name="editMotivo"
+                                    style="border: 1px solid gray; border-radius: 5px;" required>
                             </div>
                     </div>
                     <div class="modal-footer">
@@ -107,9 +106,14 @@
                                     id="removeMotivo" name="removeMotivo"
                                     style="border: 1px solid gray; border-radius:5px" required>
                             </div>
+                            <p
+                                style="color: #d9534f; background-color: #f9e2e2; border: 1px solid #d43f3a; padding: 10px; border-radius: 5px;">
+                                Todos los componentes asociados a este estado se desvincularan del mismo.
+                            </p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal" aria-label="Close">No</button>
+                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal"
+                            aria-label="Close">No</button>
                         <button type="submit" class="btn btn-danger">Eliminar</button>
                         </form>
                     </div>
@@ -191,13 +195,15 @@
                                                     data-nombre="{{ $estado->nombre }}">
                                                     <i class="fas fa-pencil"></i>
                                                 </button>
-
-                                                <input type="hidden" value="{{ $estado->id }}" name="deleteId">
-                                                <button class="btn btn-dark mr-2" data-id="{{ $estado->id }}"
-                                                    data-nombre="{{ $estado->nombre }}" data-bs-toggle="modal"
-                                                    data-bs-target="#deleteModal">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                @if (Auth::user()->rol->nombre == 'Super administrador')
+                                                    <input type="hidden" value="{{ $estado->id }}"
+                                                        name="deleteId">
+                                                    <button class="btn btn-dark mr-2" data-id="{{ $estado->id }}"
+                                                        data-nombre="{{ $estado->nombre }}" data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                @endif
 
                                             </div>
                                         </td>

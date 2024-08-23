@@ -16,7 +16,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Aqui debes agregar las categorias de componentes (RAM, Motherboard, Procesador, Perifericos, etc)
+                        Aqui debes agregar las categorias de componentes (RAM, Motherboard, Procesador, Perifericos,
+                        etc)
                     </div>
                 </div>
             </div>
@@ -76,6 +77,11 @@
                                     id="editMotivo" name="editMotivo"
                                     style="border: 1px solid gray; border-radius: 5px;" required>
                             </div>
+                            
+                            <p
+                                style="color: #d94f4f; background-color: #f9e2e2; border: 1px solid #d43f3a; padding: 10px; border-radius: 5px;">
+                                Al cambiar el nombre de la categoria, no podras encontrar los componentes vinculados a ella, en el armado de una PC o Impresora.
+                            </p>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-dark">Editar</button>
@@ -105,6 +111,10 @@
                                     id="removeMotivo" name="removeMotivo"
                                     style="border: 1px solid gray; border-radius:5px" required>
                             </div>
+                            <p
+                                style="color: #d9534f; background-color: #f9e2e2; border: 1px solid #d43f3a; padding: 10px; border-radius: 5px;">
+                                Todos los componentes asociados a esta categoria se desvincularan de la misma.
+                            </p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-dark" data-bs-dismiss="modal"
@@ -192,13 +202,15 @@
                                                 </button>
 
 
-
-                                                <input type="hidden" value="{{ $tipo->id }}" name="deleteId">
-                                                <button class="btn btn-dark mr-2" data-id="{{ $tipo->id }}"
-                                                    data-nombre="{{ $tipo->nombre }}" data-bs-toggle="modal"
-                                                    data-bs-target="#deleteModal">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                @if (Auth::user()->rol->nombre == 'Super administrador')
+                                                    <input type="hidden" value="{{ $tipo->id }}"
+                                                        name="deleteId">
+                                                    <button class="btn btn-dark mr-2" data-id="{{ $tipo->id }}"
+                                                        data-nombre="{{ $tipo->nombre }}" data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                @endif
 
                                             </div>
                                         </td>

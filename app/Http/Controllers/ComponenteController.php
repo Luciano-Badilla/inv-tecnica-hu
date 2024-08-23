@@ -72,11 +72,11 @@ class ComponenteController extends Controller
         $historia->tipo_id = 4;
         $historia->motivo = $request->input('editMotivo');
         if ($componente->nombre != $request->input('editNombre') && $componente->tipo_id != $request->input('editTipo')) {
-            $historia->detalle = "edito el nombre del componente: " . $componente->nombre . " a: " . $request->input('editNombre') . ", y el tipo de: " . ($componente->tipo->nombre ?? 'no asignado') . " a " . TipoComponenteModel::find($request->input('editTipo'))->nombre . ".";
+            $historia->detalle = "edito el nombre del componente: " . $componente->nombre . " a: " . $request->input('editNombre') . ", y la categoria de: " . ($componente->tipo->nombre ?? 'no asignado') . " a " . TipoComponenteModel::find($request->input('editTipo'))->nombre . ".";
         } elseif ($componente->nombre != $request->input('editNombre')) {
             $historia->detalle = "edito el nombre del componente: " . $componente->nombre . " a: " . $request->input('editNombre') . ".";
         } elseif ($componente->tipo_id != $request->input('editTipo')) {
-            $historia->detalle = "edito el tipo del componente: " . $componente->nombre . " de " . ($componente->tipo->nombre ?? 'no asignado') . " a " . TipoComponenteModel::find($request->input('editTipo'))->nombre . ".";
+            $historia->detalle = "edito la categoria del componente: " . $componente->nombre . " de " . ($componente->tipo->nombre ?? 'no asignado') . " a " . TipoComponenteModel::find($request->input('editTipo'))->nombre . ".";
         }
 
         $componente->tipo_id = $request->input('editTipo');
@@ -106,6 +106,10 @@ class ComponenteController extends Controller
         $historia->save();
 
         $componente->stock = ($componente->stock + $request->input('editAddStock'));
+
+        if ($componente->stock >= 1 && $componente->estado_id = 7) {
+            $componente->estado_id = 4;
+        }
         $componente->update();
 
 
@@ -127,6 +131,10 @@ class ComponenteController extends Controller
         $historia->save();
 
         $componente->stock = ($componente->stock - $request->input('removeStock'));
+
+        if ($componente->stock == 0 && $componente->estado_id = 4) {
+            $componente->estado_id = 7;
+        }
         $componente->update();
 
         return redirect()->back()->with('success', 'Stock eliminado correctamente.');
@@ -186,6 +194,7 @@ class ComponenteController extends Controller
             // Buscar el componente en el depósito destino
             $componenteDestino = ComponenteModel::where('nombre', $componente->nombre)
                 ->where('deposito_id', $depositoDestino)
+                ->where('estado_id', $componente->estado_id)
                 ->first();
 
             if ($componenteDestino) {
@@ -198,6 +207,7 @@ class ComponenteController extends Controller
                 $newComponente->nombre = $componente->nombre;
                 $newComponente->tipo_id = $componente->tipo_id;
                 $newComponente->deposito_id = $depositoDestino;
+                $newComponente->estado_id = $componente->estado_id;
                 $newComponente->stock = $stockToTransfer;
                 $newComponente->save();
             }
@@ -250,6 +260,7 @@ class ComponenteController extends Controller
             // Buscar un componente en el estado destino
             $componenteDestino = ComponenteModel::where('nombre', $componente->nombre)
                 ->where('estado_id', $estadoDestino)
+                ->where('deposito_id', $componente->deposito_id)
                 ->first();
 
             if ($componenteDestino) {
@@ -271,7 +282,7 @@ class ComponenteController extends Controller
         // Registrar la transferencia en la historia
         $historia = new HistoriaModel();
         $historia->tecnico = $user->name;
-        $historia->detalle = "transfirió " . $stockToTransfer . " " . $componente->nombre . "/s del estado: " . $estadoActual->nombre . " al estado: " . ($estadoExiste->nombre ?? 'Estado no asignado') . ".";
+        $historia->detalle = "cambio " . $stockToTransfer . " " . $componente->nombre . "/s del estado: " . $estadoActual->nombre . " al estado: " . ($estadoExiste->nombre ?? 'Estado no asignado') . ".";
         $historia->motivo = $motivo;
         $historia->tipo_id = 4; // Tipo de transferencia
         $historia->save();

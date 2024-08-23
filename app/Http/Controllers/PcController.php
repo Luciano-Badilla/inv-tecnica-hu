@@ -216,6 +216,7 @@ class PcController extends Controller
         $historia->detalle = "creó la PC: " . $request->input('addIdentificador') . " - " . $request->input('addNombre') . ".";
         $historia->motivo = "creacion de PC";
         $historia->componente_id = $pc->id;
+        $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
         $historia->tipo_id = 5;
         $historia->save();
 
@@ -251,6 +252,7 @@ class PcController extends Controller
             $historia->detalle = $request->input("editDetalle");
             $historia->motivo = $request->input('editMotivo');
             $historia->componente_id = $pc->id;
+            $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
             $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
             $historia->save();
         }
@@ -259,9 +261,10 @@ class PcController extends Controller
         if ($pc->deposito_id != $request->input('editDeposito') && $request->input('editDeposito') != null) {
             $historia = new HistoriaModel();
             $historia->tecnico = $user->name;
-            $historia->detalle = "editó el deposito de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . (DepositoModel::find($pc->deposito_id)->nombre ?? "deposito no asignado") . " a " . DepositoModel::find($request->input('editDeposito'))->nombre . ", se quito del area: " . AreaModel::find($pc->area_id)->nombre . ".";
+            $historia->detalle = "cambio el deposito de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . (DepositoModel::find($pc->deposito_id)->nombre ?? "deposito no asignado") . " a " . DepositoModel::find($request->input('editDeposito'))->nombre . (($area = AreaModel::find($pc->area_id)) ? ', se quitó del area ' . ($area->nombre ?? '') : '') . ".";
             $historia->motivo = $request->input('editMotivo');
             $historia->componente_id = $pc->id;
+            $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
             $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
             $historia->save();
             $pc->deposito_id = $request->input('editDeposito');
@@ -271,9 +274,10 @@ class PcController extends Controller
         if ($pc->area_id != $request->input('editArea') && $request->input('editArea') != null) {
             $historia = new HistoriaModel();
             $historia->tecnico = $user->name;
-            $historia->detalle = "editó el area de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . (AreaModel::find($pc->area_id)->nombre ?? "area no asignada") . " a " . AreaModel::find($request->input('editArea'))->nombre . ", se quito del deposito: " . DepositoModel::find($pc->deposito_id)->nombre . ".";
+            $historia->detalle = "cambio el area de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . (AreaModel::find($pc->area_id)->nombre ?? "area no asignada") . " a " . AreaModel::find($request->input('editArea'))->nombre . (($deposito = DepositoModel::find($pc->deposito_id)) ? ', se quitó del depósito ' . ($deposito->nombre ?? '') : '') . ".";
             $historia->motivo = $request->input('editMotivo');
             $historia->componente_id = $pc->id;
+            $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
             $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
             $historia->save();
             $pc->area_id = $request->input('editArea');
@@ -283,9 +287,10 @@ class PcController extends Controller
         if ($pc->ip != $request->input('editIp')) {
             $historia = new HistoriaModel();
             $historia->tecnico = $user->name;
-            $historia->detalle = "editó la IP de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . $pc->ip . " a " . $request->input('editIp') . ".";
+            $historia->detalle = "cambio la IP de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . $pc->ip . " a " . $request->input('editIp') . ".";
             $historia->motivo = $request->input('editMotivo');
             $historia->componente_id = $pc->id;
+            $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
             $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
             $historia->save();
         }
@@ -293,9 +298,10 @@ class PcController extends Controller
         if ($pc->nombre != $request->input('editNombre')) {
             $historia = new HistoriaModel();
             $historia->tecnico = $user->name;
-            $historia->detalle = "editó el nombre de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . $pc->nombre . " a " . $request->input('editNombre') . ".";
+            $historia->detalle = "cambio el nombre de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . $pc->nombre . " a " . $request->input('editNombre') . ".";
             $historia->motivo = $request->input('editMotivo');
             $historia->componente_id = $pc->id;
+            $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
             $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
             $historia->save();
         }
@@ -305,9 +311,10 @@ class PcController extends Controller
         if ($pc->identificador != $request->input('editIdentificador')) {
             $historia = new HistoriaModel();
             $historia->tecnico = $user->name;
-            $historia->detalle = "editó el Nº Inventario de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . $pc->identificador . " a " . $request->input('editIdentificador') . ".";
+            $historia->detalle = "cambio el Nº Inventario de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . $pc->identificador . " a " . $request->input('editIdentificador') . ".";
             $historia->motivo = $request->input('editMotivo');
             $historia->componente_id = $pc->id;
+            $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
             $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
             $historia->save();
         }
@@ -322,9 +329,10 @@ class PcController extends Controller
         if ($motherActual != $request->input('editMotherboard')) {
             $historia = new HistoriaModel();
             $historia->tecnico = $user->name;
-            $historia->detalle = "editó la placa madre de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . ComponenteModel::find($motherActual)->nombre . " a " . ComponenteModel::find($request->input('editMotherboard'))->nombre . ".";
+            $historia->detalle = "cambio la placa madre de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . ComponenteModel::find($motherActual)->nombre . " a " . ComponenteModel::find($request->input('editMotherboard'))->nombre . ".";
             $historia->motivo = $request->input('editMotivo');
             $historia->componente_id = $pc->id;
+            $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
             $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
             $historia->save();
             //Elimino mother vieja
@@ -345,9 +353,10 @@ class PcController extends Controller
         if ($proceActual != $request->input('editProcesador')) {
             $historia = new HistoriaModel();
             $historia->tecnico = $user->name;
-            $historia->detalle = "editó el procesador de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . ComponenteModel::find($proceActual)->nombre . " a " . ComponenteModel::find($request->input('editProcesador'))->nombre . ".";
+            $historia->detalle = "cambio el procesador de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . ComponenteModel::find($proceActual)->nombre . " a " . ComponenteModel::find($request->input('editProcesador'))->nombre . ".";
             $historia->motivo = $request->input('editMotivo');
             $historia->componente_id = $pc->id;
+            $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
             $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
             $historia->save();
             //Elimino mother vieja
@@ -368,9 +377,10 @@ class PcController extends Controller
         if ($fuenteActual != $request->input('editFuente')) {
             $historia = new HistoriaModel();
             $historia->tecnico = $user->name;
-            $historia->detalle = "editó la fuente de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . ComponenteModel::find($fuenteActual)->nombre . " a " . ComponenteModel::find($request->input('editFuente'))->nombre . ".";
+            $historia->detalle = "cambio la fuente de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . ComponenteModel::find($fuenteActual)->nombre . " a " . ComponenteModel::find($request->input('editFuente'))->nombre . ".";
             $historia->motivo = $request->input('editMotivo');
             $historia->componente_id = $pc->id;
+            $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
             $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
             $historia->save();
             //Elimino mother vieja
@@ -391,9 +401,10 @@ class PcController extends Controller
         if ($placavidActual != $request->input('editPlacavid')) {
             $historia = new HistoriaModel();
             $historia->tecnico = $user->name;
-            $historia->detalle = "editó la placa de video de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . (ComponenteModel::find($placavidActual)->nombre ?? 'Placa de video no asignada') . " a " . ComponenteModel::find($request->input('editPlacavid'))->nombre . ".";
+            $historia->detalle = "cambio la placa de video de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . (ComponenteModel::find($placavidActual)->nombre ?? 'Placa de video no asignada') . " a " . ComponenteModel::find($request->input('editPlacavid'))->nombre . ".";
             $historia->motivo = $request->input('editMotivo');
             $historia->componente_id = $pc->id;
+            $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
             $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
             $historia->save();
             //Elimino mother vieja
@@ -706,6 +717,7 @@ class PcController extends Controller
     public function getHistoria($id)
     {
         $historias = HistoriaModel::where('componente_id', $id)->get();
+        log::info($historias);
         return response()->json(['historia' => $historias]);
     }
 }

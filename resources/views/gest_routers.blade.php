@@ -27,7 +27,7 @@
 
         <div class="modal fade" id="infoRouterModal" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-dialog modal-dialog-centered modal-auto">
                 <div class="modal-content bg-primaty" style="border-radius: 15px">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Información del router</h5>
@@ -151,7 +151,7 @@
                             </div>
                             <div>
                                 <div class="mb-3" style="flex: 1; display:none" id="div-detalle-area">
-                                    <label for="addAreaDetalle" class="form-label">Area detalle:</label>
+                                    <label for="addAreaDetalle" class="form-label">Detalle de la ubicacion:</label>
                                     <input type="text"
                                         class="form-control @error('addAreaDetalle') is-invalid @enderror"
                                         id="addAreaDetalle" name="addAreaDetalle"
@@ -250,7 +250,7 @@
                             </div>
                             <div>
                                 <div class="mb-3" style="flex: 1; display:none" id="edit-div-detalle-area">
-                                    <label for="editAreaDetalle" class="form-label">Area detalle:</label>
+                                    <label for="editAreaDetalle" class="form-label">Detalle de la ubicacion:</label>
                                     <input type="text"
                                         class="form-control @error('editAreaDetalle') is-invalid @enderror"
                                         id="editAreaDetalle" name="editAreaDetalle"
@@ -436,11 +436,8 @@
 
                                     <div style="margin-top: auto;">
                                         <div class="flex" style="gap: 1px; justify-content: center;">
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
-                                                data-bs-target="#historyPcModal" data-id="{{ $router->id }}">
-                                                <i class="fa-solid fa-book"></i>
-                                            </button>
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
+
+                                            <button class="btn btn-dark icon infoBtn" data-bs-toggle="modal"
                                                 data-bs-target="#infoRouterModal" data-id="{{ $router->id }}"
                                                 data-identificador="{{ $router->identificador }}"
                                                 data-nombre="{{ $router->nombre }}" data-ip="{{ $router->ip }}"
@@ -452,7 +449,7 @@
                                                 data-area_detalle="{{ $router->area_detalle ?? '' }}">
                                                 <i class="fas fa-circle-info"></i>
                                             </button>
-                                            <button class="btn btn-dark icon" data-bs-toggle="modal"
+                                            <button class="btn btn-dark icon maintenanceBtn" data-bs-toggle="modal"
                                                 data-bs-target="#editRouterModal" data-id="{{ $router->id }}"
                                                 data-identificador="{{ $router->identificador }}"
                                                 data-nombre="{{ $router->nombre }}" data-ip="{{ $router->ip }}"
@@ -463,6 +460,10 @@
                                                 data-marca="{{ $router->marca_modelo ?? '' }}"
                                                 data-area_detalle="{{ $router->area_detalle ?? '' }}">
                                                 <i class="fa-solid fa-wrench"></i>
+                                            </button>
+                                            <button class="btn btn-dark icon historyBtn" data-bs-toggle="modal"
+                                                data-bs-target="#historyPcModal" data-id="{{ $router->id }}">
+                                                <i class="fa-solid fa-book"></i>
                                             </button>
                                             @if (Auth::user()->rol->nombre == 'Super administrador')
                                                 <button class="btn btn-dark icon" data-bs-toggle="modal"
@@ -523,8 +524,11 @@
                 }
             });
         });
+        var modalHandlerAttached = false;
 
         $('#historyPcModal').on('show.bs.modal', function(event) {
+            if (modalHandlerAttached) return;
+            modalHandlerAttached = true;
             var button = $(event.relatedTarget); // Botón que abrió el modal
             var componenteId = button.data('id'); // Obtener el ID del componente
 
@@ -568,6 +572,10 @@
                     alert('Error al cargar las historias.');
                 }
             });
+        });
+
+        $('#historyImpModal').on('hide.bs.modal', function() {
+            modalHandlerAttached = false;
         });
 
         // Variable global para el detalle del área
@@ -695,6 +703,51 @@
                 modal.find('#titleAsig').text("Deposito:");
                 modal.find('#infoAsig').text(Deposito);
             }
+        });
+
+        // Manejador para el click en el div con la clase 'card'
+        $('.card').on('click', function() {
+            // Dispara el click en el botón infoBtn dentro del div
+            $(this).find('.infoBtn').trigger('click');
+        });
+
+        // Manejador para el click en el botón infoBtn
+        $('.infoBtn').on('click', function(event) {
+            // Evita que el modal se abra inmediatamente
+            event.preventDefault();
+
+            // Cargar los datos en el modal
+            const modal = $('#infoRouterModal');
+            modal.find('#idenInfo').text($(this).data('identificador'));
+            modal.find('#nombreInfo').text($(this).data('nombre'));
+            modal.find('#marcaInfo').text($(this).data('marca'));
+            modal.find('#ipInfo').text($(this).data('ip'));
+            if ($(this).data('enuso')) {
+                modal.find('#titleAsig').text("Area:");
+                modal.find('#infoAsig').text($(this).data('area'));
+
+            } else {
+                modal.find('#titleAsig').text("Deposito:");
+                modal.find('#infoAsig').text($(this).data('deposito'));
+
+            }
+            modal.find('#title2Asig').text('Detalle de la ubicacion:');
+            modal.find('#info2Asig').text($(this).data('area_detalle'));
+
+            // Mostrar el modal
+            modal.modal('show');
+        });
+
+        // Manejador para el click en el botón de mantenimiento
+        $('.maintenanceBtn').on('click', function(event) {
+            event.stopPropagation();
+            // Código específico para el botón de mantenimiento
+        });
+
+        // Manejador para el click en el botón de historial
+        $('.historyBtn').on('click', function(event) {
+            event.stopPropagation();
+            // Código específico para el botón de historial
         });
 
     });

@@ -51,28 +51,28 @@
                                     {{ __('Stock') }}
                                 </x-dropdown-link>
                             </div>
-                            @if (Auth::user()->rol->nombre == 'Administrador')
+                            @if (Auth::user()->rol->nombre == 'Administrador' || Auth::user()->rol->nombre == 'Super administrador')
                                 <div class="hidden space-x-8 sm:-my-px sm:flex">
                                     <x-dropdown-link :href="route('gest_areas')" :active="request()->routeIs('gest_areas')">
                                         {{ __('Areas') }}
                                     </x-dropdown-link>
                                 </div>
                             @endif
-                            @if (Auth::user()->rol->nombre == 'Administrador')
+                            @if (Auth::user()->rol->nombre == 'Administrador' || Auth::user()->rol->nombre == 'Super administrador')
                             <div class="hidden space-x-8 sm:-my-px sm:flex">
                                 <x-dropdown-link :href="route('gest_depositos')" :active="request()->routeIs('gest_depositos')">
                                     {{ __('Depositos') }}
                                 </x-dropdown-link>
                             </div>
                             @endif
-                            @if (Auth::user()->rol->nombre == 'Administrador')
+                            @if (Auth::user()->rol->nombre == 'Administrador' || Auth::user()->rol->nombre == 'Super administrador')
                             <div class="hidden space-x-8 sm:-my-px sm:flex">
                                 <x-dropdown-link :href="route('gest_tipo_componente')" :active="request()->routeIs('gest_tipo_componente')">
                                     {{ __('Categorias') }}
                                 </x-dropdown-link>
                             </div>
                             @endif
-                            @if (Auth::user()->rol->nombre == 'Administrador')
+                            @if (Auth::user()->rol->nombre == 'Administrador' || Auth::user()->rol->nombre == 'Super administrador')
                             <div class="hidden space-x-8 sm:-my-px sm:flex">
                                 <x-dropdown-link :href="route('gest_state')" :active="request()->routeIs('gest_state')">
                                     {{ __('Estados') }}
@@ -82,47 +82,14 @@
                         </x-slot>
                     </x-dropdown>
                 </div>
-                @if (Auth::user()->rol->nombre == 'Administrador')
-                <div class="hidden sm:flex sm:items-center sm:ms-6" style="margin-left: 0%">
-                    <x-dropdown align="left" width="48">
-                        <x-slot name="trigger">
-                            <button
-                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-small rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                <div>Administracion</div>
-
-                                <div class="ms-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </button>
-                        </x-slot>
-
-                        <x-slot name="content">
-                            <div class="hidden space-x-8 sm:-my-px sm:flex">
-                                <x-dropdown-link :href="route('gest_pc')" :active="request()->routeIs('gest_pc')">
-                                    {{ __('Nuevos usuarios') }}
-                                </x-dropdown-link>
-                            </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:flex">
-                                <x-dropdown-link :href="route('gest_componentes')" :active="request()->routeIs('gest_componentes')">
-                                    {{ __('Cambios de Nombre') }}
-                                </x-dropdown-link>
-                            </div>
-                        </x-slot>
-                    </x-dropdown>
-                </div>
-                @endif
+                
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" style="margin-left: 1%">
                     <x-nav-link :href="route('historia')" :active="request()->routeIs('historia')">
                         {{ __('Historia') }}
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('reportes')" :active="request()->routeIs('reportes')">
+                    <x-nav-link :href="route('reportes')" :active="request()->routeIs('reportes')" style="margin-left: -20%">
                         {{ __('Reportes') }}
                     </x-nav-link>
                 </div>

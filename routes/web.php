@@ -12,6 +12,7 @@ use App\Http\Controllers\DispositivosController;
 use App\Http\Controllers\ImpresoraController;
 use App\Http\Controllers\TelefonoController;
 use App\Http\Controllers\RouterController;
+use App\Http\Controllers\InicioController;
 use Illuminate\Support\Facades\Route;
 
 ///////////////////////////
@@ -23,9 +24,9 @@ Route::get('/inv-tecnica', function () {
     return view('auth/login');
 });
 
-Route::get('/inv-tecnica/inicio', function () {
-    return view('inicio');
-})->middleware(['auth', 'verified'])->name('inicio');
+Route::get('/inv-tecnica/inicio', [InicioController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('inicio');
 
 
 Route::get('/inv-tecnica/dispositivos', [DispositivosController::class, 'index'])

@@ -66,6 +66,17 @@
             </div>
         </div>
 
+        <div class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <p id="toast_selection_text">Test</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+
         <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -81,9 +92,9 @@
                             <div style="display: flex; flex-direction: row; gap: 20px;">
                                 <div class="mb-3" style="flex: 1;">
                                     <label for="addNombre" class="form-label">Nombre:</label>
-                                    <input type="text" class="form-control @error('addNombre') is-invalid @enderror"
-                                        id="addNombre" name="addNombre"
-                                        style="border: 1px solid gray; border-radius: 5px;" required>
+                                    <input type="text"
+                                        class="form-control @error('addNombre') is-invalid @enderror" id="addNombre"
+                                        name="addNombre" style="border: 1px solid gray; border-radius: 5px;" required>
                                 </div>
                                 <!--
                                 <div class="mb-3" style="flex: 1;">
@@ -281,7 +292,7 @@
                                     <select class="form-control @error('editTipo') is-invalid @enderror"
                                         id="editTipo" name="editTipo"
                                         style="border: 1px solid gray; border-radius: 5px;" required>
-                                        <option>Selecciones una categoria</option>
+                                        <option>Seleccione una categoria</option>
                                         @foreach ($tipos as $tipo)
                                             <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
                                             <!-- Agrega más opciones según sea necesario -->
@@ -332,6 +343,11 @@
                                     id="removeMotivo" name="removeMotivo"
                                     style="border: 1px solid gray; border-radius:5px" required>
                             </div>
+
+                            <p
+                                style="color: #d9534f; background-color: #f9e2e2; border: 1px solid #d43f3a; padding: 10px; border-radius: 5px;">
+                                Este componente se desvinculara de todos los dispositivos al que esta asociado.
+                            </p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-dark" data-bs-dismiss="modal"
@@ -515,44 +531,67 @@
                         <p style="padding: 0.3%; text-align: center">{{ session('success') }}</p>
                     </div>
                 @endif
+                <div class="alert-primary" id="selected_info" style="display: none; justify-content:center">
+                    <p style="padding: 0.3%; text-align: center" id="selected_comp"></p>
+                    <button style="margin-left: 0.5%" id="unselect_comp"><i
+                            class="fa-solid fa-circle-xmark"></i></button>
+
+                </div>
+
                 <div class="d-flex justify-content-left p-3 bg-light rounded shadow-sm">
 
-                    <!--
-                    <div class="small-box bg-dark" style="margin: 5px;">
-                        <div class="inner">
-                            <h3 class="text-lg">‎ ‎Agregar‎ ‎ </h3>
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-bag"></i>
-                        </div>
-                    </div>
-                    <div class="small-box bg-dark" style="margin: 5px;">
-                        <div class="inner">
-                            <h3 class="text-lg">Modificar</h3>
-
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-bag"></i>
-                        </div>
-                        <a href="#" class="small-box-footer"> <i class="fas fa-edit"></i></i></a>
-                    </div>
-                    <div class="small-box bg-danger" style="margin: 5px;">
-                        <div class="inner">
-                            <h3 class="text-lg">Eliminar</h3>
-
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-bag"></i>
-                        </div>
-                        <a href="#" class="small-box-footer"><i class="fas fa-trash-alt"></i></a>
-                    </div>
-                -->
                     <div class="container mt-4">
+                        <div class="row mb-3" style="display: flex; flex-direction: column">
+                            <div>
+                                <button id="filterButton" class="btn btn-dark " style="max-width: 8%;">
+                                    <i class="fa-solid fa-filter"></i> Filtrar</button>
+                                <button id="deleteFilters" style="margin-left: 10px; display:none"><i
+                                        class="fa-solid fa-circle-xmark"></i></button>
+                            </div>
+                            <div id="filter-div" style="display: none; margin-top: 1%; gap:15px">
+                                <div>
+                                    <label for="filtro-deposito">Deposito:</label>
+                                    <select id="filtro-deposito" class="form-control">
+                                        <option value="">Todos los depósitos</option>
+                                        @foreach ($depositos as $deposito)
+                                            <option value="{{ $deposito->nombre }}">{{ $deposito->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="filtro-estado">Estado:</label>
+                                    <select id="filtro-estado" class="form-control">
+                                        <option value="">Todos los estados</option>
+                                        @foreach ($estados as $estado)
+                                            <option value="{{ $estado->nombre }}">{{ $estado->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="filtro-categoria">Categoria:</label>
+                                    <select id="filtro-categoria" class="form-control">
+                                        <option value="">Todas las categorías</option>
+                                        @foreach ($tipos as $tipo)
+                                            <option value="{{ $tipo->nombre }}">{{ $tipo->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="filtro-stock">Stock:</label>
+                                    <select id="filtro-stock" class="form-control">
+                                        <option value="">Todas las categorías</option>
+                                        <option value="poco-stock">Poco stock</option>
+                                        <option value="sin-stock">Sin stock</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <table id="table_componentes" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
                                     <th>Categoria</th>
+                                    <th>Nombre</th>
                                     <th>Deposito</th>
                                     <th>Stock</th>
                                     <th>Estado</th>
@@ -562,9 +601,9 @@
                             <tbody>
                                 @foreach ($componentes as $componente)
                                     <tr>
+                                        <td><b>{{ $componente->tipo->nombre ?? 'Categoria no asignada' }}</b></td>
                                         <td><b>{{ $componente->nombre }}</b></td>
-                                        <td><b>Categoria:
-                                                {{ $componente->tipo->nombre ?? 'Categoria no asignada' }}</b></td>
+
                                         <td><b>Deposito: {{ $componente->deposito->nombre ?? 'No asignado' }}</b></td>
                                         <td><b>Stock: {{ $componente->stock }}</b></td>
                                         <td><b>Estado: {{ $componente->estado->nombre ?? 'No asignado' }}</b></td>
@@ -572,21 +611,26 @@
 
                                         <td>
                                             <div style="display: flex; justify-content: right;">
+                                                <button class="btn btn-dark mr-2 select-button"
+                                                    data-id="{{ $componente->id }}"
+                                                    data-nombre="{{ $componente->nombre }}">
+                                                    <i class="fa-solid fa-check"></i>
+                                                </button>
                                                 <button class="btn btn-dark mr-2" data-bs-toggle="modal"
                                                     data-bs-target="#editModal" data-id="{{ $componente->id }}"
                                                     data-nombre="{{ $componente->nombre }}"
-                                                    data-stock="{{ $componente->stock }}"
-                                                    data-tipo="{{ $componente->tipo_id }}"
-                                                    data-deposito="{{ $componente->deposito_id }}">
+                                                    data-tipo="{{ $componente->tipo_id }}">
                                                     <i class="fas fa-pencil"></i>
                                                 </button>
-
-                                                <input type="hidden" value="{{ $componente->id }}" name="deleteId">
-                                                <button class="btn btn-dark mr-2" data-id="{{ $componente->id }}"
-                                                    data-nombre="{{ $componente->nombre }}" data-bs-toggle="modal"
-                                                    data-bs-target="#deleteModal">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                @if (Auth::user()->rol->nombre == 'Super administrador')
+                                                    <input type="hidden" value="{{ $componente->id }}"
+                                                        name="deleteId">
+                                                    <button class="btn btn-dark mr-2" data-id="{{ $componente->id }}"
+                                                        data-nombre="{{ $componente->nombre }}"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                @endif
 
                                             </div>
                                         </td>
@@ -638,7 +682,82 @@
 
 </x-app-layout>
 <script>
-    document.getElementById('removeNombreStock').addEventListener('change', function() {
+    $(document).ready(function() {
+
+        componente_seleccionado = null;
+
+        $('#table_componentes tbody').on('click', '.select-button', function() {
+            componente_seleccionado = $(this).data('id');
+            var selected_nombre = $(this).data('nombre');
+            $('#selected_comp').text("Componente seleccionado: " + selected_nombre);
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+
+            $('#selected_info').css('display', 'flex');
+        });
+
+
+        $('#unselect_comp').on('click', function() {
+            componente_seleccionado = null;
+            $('#selected_info').css('display', 'none');
+        })
+
+        $('#addStockModal').on('show.bs.modal', function(event) {
+            var modal = $(this);
+            modal.find('#editNombreStock').trigger('change');
+            modal.find('#editNombreStock').val(componente_seleccionado);
+            modal.find('#editNombreStock').attr('readonly', true);
+        });
+
+        $('#removeStockModal').on('show.bs.modal', function(event) {
+            var modal = $(this);
+            modal.find('#removeNombreStock').val(componente_seleccionado);
+            modal.find('#removeNombreStock').trigger('change');
+            modal.find('#removeNombreStock').attr('readonly', true);
+        });
+
+        $('#TransferModal').on('show.bs.modal', function(event) {
+            var modal = $(this);
+            modal.find('#transferNombre').trigger('change');
+            modal.find('#transferNombre').val(componente_seleccionado);
+            modal.find('#transferNombre').attr('readonly', true);
+        });
+
+        $('#TransferStateModal').on('show.bs.modal', function(event) {
+            var modal = $(this);
+            modal.find('#transferStateNombre').trigger('change');
+            modal.find('#transferStateNombre').val(componente_seleccionado);
+            modal.find('#transferStateNombre').attr('readonly', true);
+        });
+
+        $('#filterButton').on('click', function() {
+            var $filterDiv = $('#filter-div');
+            var $deleteFilters = $('#deleteFilters');
+
+            if ($filterDiv.css('display') === 'none') {
+                $filterDiv.css('display', 'flex');
+                $deleteFilters.css('display', 'inline');
+            } else {
+                $filterDiv.css('display', 'none');
+                $deleteFilters.css('display', 'none');
+            }
+        });
+
+        $('#deleteFilters').on('click', function() {
+            $('#filtro-deposito, #filtro-estado, #filtro-categoria, #filtro-stock').val(null).trigger('change');
+        });
+
+
+
+
+
+
+
+    });
+
+    $('#removeNombreStock').on('change', function() {
         const transferStockInput = document.getElementById('removeStock');
         const selectedOption = this.options[this.selectedIndex];
         const stock = selectedOption.getAttribute('data-removeStock');
@@ -659,7 +778,7 @@
     });
 
 
-    document.getElementById('transferNombre').addEventListener('change', function() {
+    $('#transferNombre').on('change', function() {
         const transferStockInput = document.getElementById('transferStock');
         const addButton = document.querySelector('.all-button');
         const selectedOption = this.options[this.selectedIndex];
@@ -685,7 +804,7 @@
         }
     });
 
-    document.getElementById('transferStateNombre').addEventListener('change', function() {
+    $('#transferStateNombre').on('change', function() {
         const transferStockInput = document.getElementById('transferStateStock');
         const addButton = document.querySelector('.all-state-button');
         const selectedOption = this.options[this.selectedIndex];
@@ -710,5 +829,7 @@
             const stock = selectedOption.getAttribute('data-statestock');
             transferStockInput.value = stock; // Establecer el valor al stock máximo
         }
+
+
     });
 </script>

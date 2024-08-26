@@ -20,156 +20,156 @@ use Illuminate\Support\Facades\Route;
 
 ///////////////////////////
 
-Route::get('/inv-tecnica', function () {
+Route::get('', function () {
     return view('auth/login');
 });
 
-Route::get('/inv-tecnica/inicio', [InicioController::class, 'index'])
+Route::get('/inicio', [InicioController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('inicio');
 
 
-Route::get('/inv-tecnica/dispositivos', [DispositivosController::class, 'index'])
+Route::get('/dispositivos', [DispositivosController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dispositivos');
 
-Route::get('/inv-tecnica/gest_tipo_componente', [TipoComponente::class, 'index'])
+Route::get('/gest_tipo_componente', [TipoComponente::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('gest_tipo_componente');
 
-Route::post('/inv-tecnica/gest_tipo_componente/store', [TipoComponente::class, 'store'])
+Route::post('/gest_tipo_componente/store', [TipoComponente::class, 'store'])
     ->name('store_tipo');
 
-Route::patch('/inv-tecnica/gest_tipo_componente/patch', [TipoComponente::class, 'edit'])
+Route::patch('/gest_tipo_componente/patch', [TipoComponente::class, 'edit'])
     ->name('edit_tipo');
 
-Route::post('/inv-tecnica/gest_tipo_componente/delete', [TipoComponente::class, 'delete'])
+Route::post('/gest_tipo_componente/delete', [TipoComponente::class, 'delete'])
     ->name('delete_tipo');
 
-Route::get('/inv-tecnica/gest_depositos', [DepositoController::class, 'index'])
+Route::get('/gest_depositos', [DepositoController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('gest_depositos');
 
-Route::post('/inv-tecnica/gest_depositos/store', [DepositoController::class, 'store'])
+Route::post('/gest_depositos/store', [DepositoController::class, 'store'])
     ->name('store_deposito');
 
-Route::patch('/inv-tecnica/gest_depositos/patch', [DepositoController::class, 'edit'])
+Route::patch('/gest_depositos/patch', [DepositoController::class, 'edit'])
     ->name('edit_deposito');
 
-Route::post('/inv-tecnica/gest_depositos/delete', [DepositoController::class, 'delete'])
+Route::post('/gest_depositos/delete', [DepositoController::class, 'delete'])
     ->name('delete_deposito');
 
-Route::get('/inv-tecnica/gest_areas', [AreaController::class, 'index'])
+Route::get('/gest_areas', [AreaController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('gest_areas');
 
-Route::post('/inv-tecnica/gest_areas/store', [AreaController::class, 'store'])
+Route::post('/gest_areas/store', [AreaController::class, 'store'])
     ->name('store_area');
 
-Route::patch('/inv-tecnica/gest_areas/patch', [AreaController::class, 'edit'])
+Route::patch('/gest_areas/patch', [AreaController::class, 'edit'])
     ->name('edit_area');
 
-Route::post('/inv-tecnica/gest_areas/delete', [AreaController::class, 'delete'])
+Route::post('/gest_areas/delete', [AreaController::class, 'delete'])
     ->name('delete_area');
 
-Route::get('/inv-tecnica/gest_componentes', [ComponenteController::class, 'index'])
+Route::get('/gest_componentes', [ComponenteController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('gest_componentes');
 
-Route::post('/inv-tecnica/gest_componentes/store', [ComponenteController::class, 'store'])
+Route::post('/gest_componentes/store', [ComponenteController::class, 'store'])
     ->name('store_componentes');
 
-Route::post('/inv-tecnica/gest_componentes/add_stock', [ComponenteController::class, 'add_stock'])
+Route::post('/gest_componentes/add_stock', [ComponenteController::class, 'add_stock'])
     ->name('add_stock_componentes');
 
-Route::post('/inv-tecnica/gest_componentes/remove_stock', [ComponenteController::class, 'remove_stock'])
+Route::post('/gest_componentes/remove_stock', [ComponenteController::class, 'remove_stock'])
     ->name('remove_stock_componentes');
 
-Route::patch('/inv-tecnica/gest_componentes/patch', [ComponenteController::class, 'edit'])
+Route::patch('/gest_componentes/patch', [ComponenteController::class, 'edit'])
     ->name('edit_componentes');
 
-Route::post('/inv-tecnica/gest_componentes/delete', [ComponenteController::class, 'delete'])
+Route::post('/gest_componentes/delete', [ComponenteController::class, 'delete'])
     ->name('delete_componentes');
 
-Route::post('/inv-tecnica/gest_componentes/transfer', [ComponenteController::class, 'transfer'])
+Route::post('/gest_componentes/transfer', [ComponenteController::class, 'transfer'])
     ->name('transfer_componentes');
 
-Route::post('/inv-tecnica/gest_componentes/state', [ComponenteController::class, 'transferState'])
+Route::post('/gest_componentes/state', [ComponenteController::class, 'transferState'])
     ->name('state_componentes');
 
-Route::get('/inv-tecnica/gest_pc', [PcController::class, 'index'])
+Route::get('/gest_pc', [PcController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('gest_pc');
 
-Route::post('/inv-tecnica/gest_pc/store', [PcController::class, 'store'])
+Route::post('/gest_pc/store', [PcController::class, 'store'])
     ->name('store_pc');
 
-Route::patch('/inv-tecnica/gest_pc/patch', [PcController::class, 'edit'])
+Route::patch('/gest_pc/patch', [PcController::class, 'edit'])
     ->name('edit_pc');
 
-Route::post('/inv-tecnica/gest_pc/delete', [PcController::class, 'delete'])
+Route::post('/gest_pc/delete', [PcController::class, 'delete'])
     ->name('delete_pc');
 
-Route::get('/inv-tecnica/gest_impresoras', [ImpresoraController::class, 'index'])
+Route::get('/gest_impresoras', [ImpresoraController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('gest_impresoras');
 
-Route::post('/inv-tecnica/gest_impresoras/store', [ImpresoraController::class, 'store'])
+Route::post('/gest_impresoras/store', [ImpresoraController::class, 'store'])
     ->name('store_impresoras');
 
-Route::patch('/inv-tecnica/gest_impresoras/patch', [ImpresoraController::class, 'edit'])
+Route::patch('/gest_impresoras/patch', [ImpresoraController::class, 'edit'])
     ->name('edit_impresoras');
 
-Route::post('/inv-tecnica/gest_impresoras/delete', [ImpresoraController::class, 'delete'])
+Route::post('/gest_impresoras/delete', [ImpresoraController::class, 'delete'])
     ->name('delete_impresoras');
 
-Route::get('/inv-tecnica/gest_telefonos', [TelefonoController::class, 'index'])
+Route::get('/gest_telefonos', [TelefonoController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('gest_telefonos');
 
-Route::post('/inv-tecnica/gest_telefonos/store', [TelefonoController::class, 'store'])
+Route::post('/gest_telefonos/store', [TelefonoController::class, 'store'])
     ->name('store_telefonos');
 
-Route::patch('/inv-tecnica/gest_telefonos/patch', [TelefonoController::class, 'edit'])
+Route::patch('/gest_telefonos/patch', [TelefonoController::class, 'edit'])
     ->name('edit_telefonos');
 
-Route::post('/inv-tecnica/gest_telefonos/delete', [TelefonoController::class, 'delete'])
+Route::post('/gest_telefonos/delete', [TelefonoController::class, 'delete'])
     ->name('delete_telefonos');
 
-Route::get('/inv-tecnica/gest_routers', [RouterController::class, 'index'])
+Route::get('/gest_routers', [RouterController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('gest_routers');
 
-Route::post('/inv-tecnica/gest_routers/store', [RouterController::class, 'store'])
+Route::post('/gest_routers/store', [RouterController::class, 'store'])
     ->name('store_routers');
 
-Route::patch('/inv-tecnica/gest_routers/patch', [RouterController::class, 'edit'])
+Route::patch('/gest_routers/patch', [RouterController::class, 'edit'])
     ->name('edit_routers');
 
-Route::post('/inv-tecnica/gest_routers/delete', [RouterController::class, 'delete'])
+Route::post('/gest_routers/delete', [RouterController::class, 'delete'])
     ->name('delete_routers');
 
-Route::get('/inv-tecnica/gest_pc/historia/{id}', [PcController::class, 'getHistoria']);
+Route::get('/gest_pc/historia/{id}', [PcController::class, 'getHistoria']);
 
-Route::get('/inv-tecnica/gest_state', [EstadoController::class, 'index'])
+Route::get('/gest_state', [EstadoController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('gest_state');
 
-Route::post('/inv-tecnica/gest_state/store', [EstadoController::class, 'store'])
+Route::post('/gest_state/store', [EstadoController::class, 'store'])
     ->name('store_state');
 
-Route::patch('/inv-tecnica/gest_state/patch', [EstadoController::class, 'edit'])
+Route::patch('/gest_state/patch', [EstadoController::class, 'edit'])
     ->name('edit_state');
 
-Route::post('/inv-tecnica/gest_state/delete', [EstadoController::class, 'delete'])
+Route::post('/gest_state/delete', [EstadoController::class, 'delete'])
     ->name('delete_state');
 
 
-Route::get('/inv-tecnica/historia', [HistoriaController::class, 'index'])
+Route::get('/historia', [HistoriaController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('historia');
 
-Route::get('/inv-tecnica/reportes', function () {
+Route::get('/reportes', function () {
     return view('reportes');
 })->middleware(['auth', 'verified'])->name('reportes');
 

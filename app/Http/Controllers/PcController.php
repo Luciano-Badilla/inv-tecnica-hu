@@ -714,9 +714,11 @@ class PcController extends Controller
         return redirect()->back()->with('success', 'Pc eliminado correctamente.');
     }
 
-    public function getHistoria($id)
+    public function getHistoria($tipo, $id)
     {
-        $historias = HistoriaModel::where('componente_id', $id)->get();
+        $historias = HistoriaModel::where('componente_id', $id)
+        ->where('tipo_dispositivo', $tipo)
+        ->get();
         log::info($historias);
         return response()->json(['historia' => $historias]);
     }

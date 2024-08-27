@@ -150,8 +150,9 @@ Route::patch('/gest_routers/patch', [RouterController::class, 'edit'])
 Route::post('/gest_routers/delete', [RouterController::class, 'delete'])
     ->name('delete_routers');
 
-Route::get('/gest_pc/historia/{id}', [PcController::class, 'getHistoria'])
+Route::get('/gest_pc/historia/{tipo}/{id}', [PcController::class, 'getHistoria'])
     ->name('historia.get');
+
 
 Route::get('/gest_state', [EstadoController::class, 'index'])
     ->middleware(['auth', 'verified'])

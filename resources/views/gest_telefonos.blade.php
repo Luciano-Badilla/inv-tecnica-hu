@@ -470,7 +470,7 @@
                                                 <i class="fa-solid fa-wrench"></i>
                                             </button>
                                             <button class="btn btn-dark icon historyBtn" data-bs-toggle="modal"
-                                                data-bs-target="#historyPcModal" data-id="{{ $telefono->id }}">
+                                                data-bs-target="#historyPcModal" data-id="{{ $telefono->id }}" data-nro_inv="{{ $telefono->identificador }}" data-nombre="{{ $telefono->nombre }}" data-tipo="{{ "Telefono" }}">
                                                 <i class="fa-solid fa-book"></i>
                                             </button>
                                             @if (Auth::user()->rol->nombre == 'Super administrador')
@@ -517,19 +517,25 @@
         });
 
         var modalHandlerAttached = false;
-    
+        var nro_inv = "";
+        var nombre = "";
+
         $('#historyPcModal').on('show.bs.modal', function(event) {
             if (modalHandlerAttached) return;
             modalHandlerAttached = true;
             var button = $(event.relatedTarget); // Botón que abrió el modal
             var componenteId = button.data('id'); // Obtener el ID del componente
+            var componenteTipo = button.data('tipo'); // Obtener el ID del componente
+            nro_inv = button.data('nro_inv');
+            nombre = button.data('nombre');
 
             // Limpiar cualquier dato previo en la tabla
             var table = $('#table_historias_pc').DataTable();
             table.order([3, 'desc']).draw();
             table.clear().draw();
 
-            var historiaUrl = '{{ route('historia.get', ':id') }}';
+            var historiaUrl = '{{ route('historia.get', ['tipo' => ':tipo', 'id' => ':id']) }}';
+            historiaUrl = historiaUrl.replace(':tipo', componenteTipo);
             historiaUrl = historiaUrl.replace(':id', componenteId);
 
             // Realizar la solicitud AJAX para obtener los registros de historia
@@ -689,11 +695,11 @@
             modal.find('#marcaInfo').text($(this).data('marca'));
             modal.find('#numeroInfo').text($(this).data('numero'));
             modal.find('#ipInfo').text($(this).data('ip'));
-            if($(this).data('enuso')){
+            if ($(this).data('enuso')) {
                 modal.find('#titleAsig').text("Area:");
                 modal.find('#infoAsig').text($(this).data('area'));
 
-            }else{
+            } else {
                 modal.find('#titleAsig').text("Deposito:");
                 modal.find('#infoAsig').text($(this).data('deposito'));
 
@@ -713,6 +719,48 @@
         $('.historyBtn').on('click', function(event) {
             event.stopPropagation();
             // Código específico para el botón de historial
+        });
+
+        
+        $("#table_historias_pc").DataTable({
+            dom: 'Bfrtip',
+            buttons: [{
+                extend: 'excelHtml5',
+                text: 'Exportar a Excel',
+                className: 'btn btn-dark custom-export-btn',
+                title: function() {
+
+                    return "Historia de " + nro_inv + " - " + nombre;
+
+                }
+            }],
+            "responsive": true,
+            "lengthChange": true,
+            "autoWidth": true,
+            "language": {
+                "decimal": "",
+                "emptyTable": "No hay datos disponibles en la tabla",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": " _MENU_ ",
+                "loadingRecords": "Cargando...",
+                "processing": "Procesando...",
+                "search": "Buscar:",
+                "zeroRecords": "No se encontraron registros coincidentes",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                },
+                "aria": {
+                    "sortAscending": ": activar para ordenar la columna ascendente",
+                    "sortDescending": ": activar para ordenar la columna descendente"
+                }
+            }
         });
 
     });

@@ -32,7 +32,7 @@ class ReportesController extends Controller
         $pcs = PcModel::all();
 
         // Pasar los datos a la vista
-        return view('nuevo_reporte', ['areas' => $areas, 'historias' => $historias, 'estados' => $estados, 'tipos' => $tipos, 'depositos'=>$depositos, 'componentes'=>$componentes, 'routers'=>$routers, 'telefonos'=>$telefonos, 'impresoras'=>$impresoras, 'pcs'=>$pcs]);
+        return view('reportes', ['areas' => $areas, 'historias' => $historias, 'estados' => $estados, 'tipos' => $tipos, 'depositos'=>$depositos, 'componentes'=>$componentes, 'routers'=>$routers, 'telefonos'=>$telefonos, 'impresoras'=>$impresoras, 'pcs'=>$pcs]);
     }
 
     public function store(Request $request)

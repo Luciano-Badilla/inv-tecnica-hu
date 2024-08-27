@@ -587,7 +587,7 @@
                             </div>
                         </div>
 
-                        <table id="table_componentes" class="table table-bordered table-striped">
+                        <table id="table_componentes" class="table table-bordered table-striped" style="min-width: 100%">
                             <thead style="display: none">
                                 <tr>
                                     <th>Categoria</th>

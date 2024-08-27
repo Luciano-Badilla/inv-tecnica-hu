@@ -36,7 +36,10 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.1/css/OverlayScrollbars.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daterangepicker/3.1.0/daterangepicker.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet"  />
+
+
+
     <!-- Custom Styles -->
     <style>
         /* Estilo para el campo de búsqueda */
@@ -719,7 +722,7 @@
             /* Establece un ancho mínimo para las columnas */
             word-wrap: break-word;
             /* Asegura que el contenido se ajuste dentro del ancho */
-            table-layout: fixed; 
+            table-layout: fixed;
         }
     </style>
 
@@ -750,9 +753,10 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Bootstrap 4 -->
+    <!-- Bootstrap 4 y 5 (Elige una versión, usualmente no se usan ambas juntas) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
     <!-- jQuery UI -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -770,7 +774,7 @@
     <!-- jQuery Knob Chart -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-knob/1.2.13/jquery.knob.min.js"></script>
 
-    <!-- daterangepicker -->
+    <!-- Daterangepicker -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/daterangepicker/3.1.0/daterangepicker.js"></script>
 
@@ -792,16 +796,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/pages/dashboard.js"></script>
 
     <!-- DataTables -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
 
     <!-- List.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"
-        integrity="sha512-xhoRSwFWTkMiZ8nAqphZ5StVrNz/7jJS0aVvPpQb0MF7FO64PngXfpHPkWwDpX+UlLUzLDmte9UpjilUEcQ+Ig=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <!-- DataTables Buttons -->
+    <script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.1.0/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
+
+    <!-- JSZip (Necesario para la exportación a Excel) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 
     <footer>
         <script>
@@ -970,39 +980,8 @@
                         }
                     }
                 });
-
-                $("#table_historias_pc").DataTable({
-                    "order": [
-                        [3, 'desc']
-                    ],
-                    "responsive": true,
-                    "lengthChange": true,
-                    "autoWidth": true,
-                    "language": {
-                        "decimal": "",
-                        "emptyTable": "No hay datos disponibles en la tabla",
-                        "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-                        "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
-                        "infoFiltered": "(filtrado de _MAX_ entradas totales)",
-                        "infoPostFix": "",
-                        "thousands": ",",
-                        "lengthMenu": " _MENU_ ",
-                        "loadingRecords": "Cargando...",
-                        "processing": "Procesando...",
-                        "search": "Buscar:",
-                        "zeroRecords": "No se encontraron registros coincidentes",
-                        "paginate": {
-                            "first": "Primero",
-                            "last": "Último",
-                            "next": "Siguiente",
-                            "previous": "Anterior"
-                        },
-                        "aria": {
-                            "sortAscending": ": activar para ordenar la columna ascendente",
-                            "sortDescending": ": activar para ordenar la columna descendente"
-                        }
-                    }
-                });
+                
+                $("#table_historias_pc").css("min-width","100%");
 
                 $('#editModal').on('show.bs.modal', function(event) {
                     var button = $(event.relatedTarget); // Botón que abrió el modal

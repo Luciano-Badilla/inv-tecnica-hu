@@ -13,6 +13,7 @@ use App\Http\Controllers\ImpresoraController;
 use App\Http\Controllers\TelefonoController;
 use App\Http\Controllers\RouterController;
 use App\Http\Controllers\InicioController;
+use App\Http\Controllers\ReportesController;
 use Illuminate\Support\Facades\Route;
 
 ///////////////////////////
@@ -149,7 +150,8 @@ Route::patch('/gest_routers/patch', [RouterController::class, 'edit'])
 Route::post('/gest_routers/delete', [RouterController::class, 'delete'])
     ->name('delete_routers');
 
-Route::get('/gest_pc/historia/{id}', [PcController::class, 'getHistoria']);
+Route::get('/gest_pc/historia/{id}', [PcController::class, 'getHistoria'])
+    ->name('historia.get');
 
 Route::get('/gest_state', [EstadoController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -169,9 +171,9 @@ Route::get('/historia', [HistoriaController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('historia');
 
-Route::get('/reportes', function () {
-    return view('reportes');
-})->middleware(['auth', 'verified'])->name('reportes');
+Route::get('/reportes', [ReportesController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('reportes');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

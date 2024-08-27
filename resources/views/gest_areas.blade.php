@@ -16,7 +16,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Aqui debes agregar los areas donde se encuentran las PCs.
+                        Aqui debes agregar los areas donde se encuentran los dispositivos.
                     </div>
                 </div>
             </div>

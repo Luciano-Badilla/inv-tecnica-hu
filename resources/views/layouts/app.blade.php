@@ -36,7 +36,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.1/css/OverlayScrollbars.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daterangepicker/3.1.0/daterangepicker.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <!-- Custom Styles -->
     <style>
         /* Estilo para el campo de búsqueda */
@@ -118,10 +118,6 @@
             display: flex !important;
             justify-content: flex-start !important;
             /* Alinea el botón al principio del contenedor */
-        }
-
-        .dataTables_wrapper thead {
-            display: none !important;
         }
 
         /* Estilo para cuando pasas el mouse por encima de las filas */
@@ -709,6 +705,21 @@
                 opacity: var(--blur-opacity);
             }
 
+        }
+
+        .custom-export-btn {
+            margin-bottom: 1%;
+            margin-left: 1%;
+            /* Elimina márgenes */
+        }
+
+        #table-historias th,
+        #table-historias td {
+            min-width: 100px;
+            /* Establece un ancho mínimo para las columnas */
+            word-wrap: break-word;
+            /* Asegura que el contenido se ajuste dentro del ancho */
+            table-layout: fixed; 
         }
     </style>
 

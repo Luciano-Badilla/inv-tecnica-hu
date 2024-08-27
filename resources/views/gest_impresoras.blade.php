@@ -551,8 +551,11 @@
             table.clear().draw();
             table.order([3, 'desc']).draw();
 
+            var historiaUrl = '{{ route('historia.get', ':id') }}';
+            historiaUrl = historiaUrl.replace(':id', componenteId);
+
             $.ajax({
-                url: '/inv-tecnica/gest_pc/historia/' + componenteId,
+                url: historiaUrl,
                 method: 'GET',
                 success: function(response) {
                     var data = [];

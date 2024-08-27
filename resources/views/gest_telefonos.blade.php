@@ -529,10 +529,12 @@
             table.order([3, 'desc']).draw();
             table.clear().draw();
 
+            var historiaUrl = '{{ route('historia.get', ':id') }}';
+            historiaUrl = historiaUrl.replace(':id', componenteId);
+
             // Realizar la solicitud AJAX para obtener los registros de historia
             $.ajax({
-                url: '/inv-tecnica/gest_pc/historia/' +
-                    componenteId, // Cambia la URL a la ruta de tu controlador
+                url: historiaUrl, // Cambia la URL a la ruta de tu controlador
                 method: 'GET',
                 success: function(response) {
                     var data = [];

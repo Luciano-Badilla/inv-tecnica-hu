@@ -1102,10 +1102,12 @@
             var table = $('#table_historias_pc').DataTable();
             table.clear().draw();
 
+            var historiaUrl = '{{ route('historia.get', ':id') }}';
+            historiaUrl = historiaUrl.replace(':id', componenteId);
+
             // Realizar la solicitud AJAX para obtener los registros de historia
             $.ajax({
-                url: '/inv-tecnica/gest_pc/historia/' +
-                    componenteId, // Cambia la URL a la ruta de tu controlador
+                url: historiaUrl, // Cambia la URL a la ruta de tu controlador
                 method: 'GET',
                 success: function(response) {
                     var data = [];
@@ -1177,10 +1179,10 @@
             modal.find('#idenInfo').text($(this).data('identificador'));
             modal.find('#nombreInfo').text($(this).data('nombre'));
             modal.find('#ipInfo').text($(this).data('ip'));
-            if($(this).data('enuso')){
+            if ($(this).data('enuso')) {
                 modal.find('#titleAsig').text('Area:');
                 modal.find('#infoAsig').text($(this).data('area'));
-            }else{
+            } else {
                 modal.find('#titleAsig').text('Deposito:');
                 modal.find('#infoAsig').text($(this).data('deposito'));
             }

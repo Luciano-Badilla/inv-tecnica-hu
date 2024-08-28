@@ -172,6 +172,14 @@ Route::get('/historia', [HistoriaController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('historia');
 
+// routes/web.php
+Route::get('/filter-reportes', [ReportesController::class, 'filterReportes'])->middleware(['auth', 'verified'])
+    ->name('filter_historias');
+
+Route::get('/filter-stock', [ReportesController::class, 'filterStock'])->middleware(['auth', 'verified'])
+    ->name('filter_stock');
+
+
 Route::get('/reportes', [ReportesController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('reportes');

@@ -14,12 +14,6 @@ use App\Models\ComponenteModel;
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 flex" style="justify-content:start; gap:15px">
                     <div class="mb-3" style="flex: 1;">
-                        <label for="addTitulo" class="form-label">Titulo del reporte:</label>
-                        <input type="text" class="form-control @error('addTitulo') is-invalid @enderror"
-                            id="addTitulo" name="addTitulo" style="border: 1px solid gray; border-radius: 5px;"
-                            required>
-                    </div>
-                    <div class="mb-3" style="flex: 1;">
                         <label for="addTipo" class="form-label">Contenido del Informe:</label>
                         <select class="form-control" id="addTipo" name="addTipo"
                             style="border: 1px solid gray; border-radius: 5px;" required>
@@ -37,9 +31,16 @@ use App\Models\ComponenteModel;
                             <option value=10>Estados</option>
                         </select>
                     </div>
+                    <div class="mb-3" style="flex: 1;">
+                        <label for="addTitulo" class="form-label">Titulo del reporte:</label>
+                        <input type="text" class="form-control @error('addTitulo') is-invalid @enderror"
+                            id="addTitulo" name="addTitulo" style="border: 1px solid gray; border-radius: 5px;"
+                            required>
+                    </div>
+
                 </div>
 
-                <div style="padding-left: 15px; padding-right: 15px;" id="div-table">
+                <div style="padding-left: 15px; padding-right: 15px; margin-top: -2%" id="div-table">
                     <template id="estados_template">
                         <table id="table-estados" class="table table-bordered table-striped">
                             <thead>
@@ -110,6 +111,48 @@ use App\Models\ComponenteModel;
                         </table>
                     </template>
                     <template id="historias_template">
+                        <div class="row mb-3" style="margin-top: -3%">
+                            <div id="filter-div-hs"
+                                style="display: flex; flex-direction: row; gap: 15px; margin-top: 1%">
+                                <!-- Filtro por Técnicos -->
+                                <div>
+                                    <label for="filtro-tecnicos-hs" style="margin-bottom: 0.5rem;">Técnico:</label>
+                                    <select id="filtro-tecnicos-hs" class="form-select" style="width: 200px;">
+                                        <option value="">Todos</option>
+                                        @foreach ($users as $user)
+                                            {
+                                            <option value="{{ $user->name }}">{{ $user->name }}</option>
+                                            }
+                                        @endforeach
+                                        <!-- Agrega más opciones según sea necesario -->
+                                    </select>
+                                </div>
+
+                                <!-- Filtro por Fecha -->
+                                <div style="display: flex; flex-direction: column; gap: 15px;">
+                                    <div style="display: flex; flex-direction: row; gap: 15px;">
+                                        <label>Fecha:</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="filter-range-hs">
+                                            <label class="form-check-label" for="filter-range-hs">Rango</label>
+                                        </div>
+                                    </div>
+
+                                    <div id="date-filters-hs" style="margin-top: -12%;">
+                                        <input class="form-control" type="date" id="date-hs"
+                                            style="margin-top: 5px; border: 1px solid #ced4da; border-radius: 0.25rem; padding: 0.375rem 0.75rem;">
+                                    </div>
+
+                                    <div id="range-filters-hs"
+                                        style="display: none; flex-direction:row; margin-top: -5.8%; gap:10px">
+                                        <input class="form-control" type="date" id="start-date-hs"
+                                            style="margin-top: 5px; border: 1px solid #ced4da; border-radius: 0.25rem; padding: 0.375rem 0.75rem;">
+                                        <input class="form-control" type="date" id="end-date-hs"
+                                            style="margin-top: 5px; border: 1px solid #ced4da; border-radius: 0.25rem; padding: 0.375rem 0.75rem;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div style="display: flex; gap:15px; padding-left: 1%; padding-bottom: 1%">
                             <div class="form-check">
                                 <input class="form-check-input column-toggle" type="checkbox" id="column-tecnico"
@@ -156,7 +199,44 @@ use App\Models\ComponenteModel;
                         </table>
                     </template>
                     <template id="stock_template">
-                        <div style="display: flex; gap:15px; padding-left: 1%; padding-bottom: 1%">
+                        <div id="filter-div" style="display: flex; gap:15px">
+                            <div>
+                                <label for="filtro-deposito">Deposito:</label>
+                                <select id="filtro-deposito" class="form-control">
+                                    <option value="">Todos los depósitos</option>
+                                    @foreach ($depositos as $deposito)
+                                        <option value="{{ $deposito->nombre }}">{{ $deposito->nombre }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label for="filtro-estado">Estado:</label>
+                                <select id="filtro-estado" class="form-control">
+                                    <option value="">Todos los estados</option>
+                                    @foreach ($estados as $estado)
+                                        <option value="{{ $estado->nombre }}">{{ $estado->nombre }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label for="filtro-categoria">Categoria:</label>
+                                <select id="filtro-categoria" class="form-control">
+                                    <option value="">Todas las categorías</option>
+                                    @foreach ($tipos as $tipo)
+                                        <option value="{{ $tipo->nombre }}">{{ $tipo->nombre }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label for="filtro-stock">Stock:</label>
+                                <select id="filtro-stock" class="form-control">
+                                    <option value="">Todas las categorías</option>
+                                    <option value="poco-stock">Poco stock</option>
+                                    <option value="sin-stock">Sin stock</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap:15px; padding-left: 1%; padding-bottom: 1%; margin-top: 2%;">
                             <div class="form-check">
                                 <input class="form-check-input column-toggle" type="checkbox" id="column-categoria"
                                     data-column="0" checked>
@@ -463,72 +543,6 @@ use App\Models\ComponenteModel;
                             </tbody>
                         </table>
                     </template>
-                    <template id="pcs_comp_template">
-                        <div style="display: flex; gap:15px; padding-left: 1%; padding-bottom: 1%">
-                            <div class="form-check">
-                                <input class="form-check-input column-toggle" type="checkbox" id="column-nro_inv"
-                                    data-column="0" checked>
-                                <label class="form-check-label" for="column-nro_inv">Nº de inventario</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input column-toggle" type="checkbox" id="column-nombre"
-                                    data-column="1" checked>
-                                <label class="form-check-label" for="column-nombre">Nombre</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input column-toggle" type="checkbox" id="column-ip"
-                                    data-column="2" checked>
-                                <label class="form-check-label" for="column-ip">IPv4</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input column-toggle" type="checkbox" id="column-componentes"
-                                    data-column="3" checked>
-                                <label class="form-check-label" for="column-componentes">Componentes</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input column-toggle" type="checkbox" id="column-deposito"
-                                    data-column="4" checked>
-                                <label class="form-check-label" for="column-deposito">Deposito</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input column-toggle" type="checkbox" id="column-area"
-                                    data-column="5" checked>
-                                <label class="form-check-label" for="column-area">Area</label>
-                            </div>
-                        </div>
-                        <button id="exportHistorias" class="btn btn-dark custom-export-btn exportHistorias">Exportar
-                            Excel</button>
-                        <table id="table-pcs_comp" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Nº de inventario</th>
-                                    <th>Nombre</th>
-                                    <th>IPv4</th>
-                                    <th>Componentes</th>
-                                    <th>Deposito</th>
-                                    <th>Area</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($pcs as $pc)
-                                    <tr>
-                                        <td><b>{{ $pc->identificador }}</b></td>
-                                        <td><b>{{ $pc->nombre }}</b></td>
-                                        <td><b>{{ $pc->ip }}</b></td>
-                                        <td><b>
-                                                @foreach($pc->componentes as $componente)
-                                                <p>
-                                                    {{ ComponenteModel::find($componente->id)->nombre }}
-                                                </p>
-                                                @endforeach
-                                            </b></td>
-                                        <td><b>{{ $pc->deposito->nombre ?? 'No asignado' }}</b></td>
-                                        <td><b>{{ $pc->area->nombre ?? 'No asignado' }}</b></td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </template>
                 </div>
             </div>
         </div>
@@ -546,6 +560,7 @@ use App\Models\ComponenteModel;
     $(document).ready(function() {
         let table, titulo;
 
+        // Plantillas de contenido
         const estadosTemplate = $('#estados_template').html();
         const categoriasTemplate = $('#categorias_template').html();
         const depositosTemplate = $('#depositos_template').html();
@@ -558,15 +573,81 @@ use App\Models\ComponenteModel;
         const pcsTemplate = $('#pcs_template').html();
         const pcsCompTemplate = $('#pcs_comp_template').html();
 
-        $('#addTipo').on('change', function() {
+        function initializeTable(templateToUse) {
             // Destruir la tabla existente si existe
             if (table) {
                 table.destroy();
                 $('#div-table').empty(); // Limpiar el contenedor de la tabla
             }
 
-            let templateToUse;
+            $('#div-table').html(templateToUse);
+            $('#addTitulo').val(titulo);
 
+            // Inicializar la tabla
+            var simpleTables = [7, 8, 9, 10];
+            if (simpleTables.includes(parseInt($('#addTipo').val()))) {
+                table = $('#table-' + getTableId()).DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [{
+                        extend: 'excelHtml5',
+                        text: 'Exportar a Excel',
+                        className: 'btn btn-dark custom-export-btn',
+                        title: function() {
+                            return $('#addTitulo').val() || titulo;
+                        }
+                    }],
+                    paging: false,
+                    searching: false,
+                    info: false,
+                    autoWidth: true
+                });
+            } else {
+                table = $('#table-' + getTableId()).DataTable({
+                    paging: false,
+                    searching: false,
+                    info: false,
+                    autoWidth: true
+                });
+            }
+
+
+            // Configurar eventos para cambiar visibilidad de columnas
+            $('.column-toggle').off('change').on('change', function() {
+                const column = table.column($(this).data('column'));
+                column.visible(!column.visible());
+                $("#table-" + getTableId()).css("min-width", "100%");
+            });
+        }
+
+        function getTableId() {
+            switch ($('#addTipo').val()) {
+                case "10":
+                    return 'estados';
+                case "9":
+                    return 'categorias';
+                case "8":
+                    return 'depositos';
+                case "7":
+                    return 'areas';
+                case "6":
+                    return 'historias';
+                case "5":
+                    return 'componentes';
+                case "4":
+                    return 'routers';
+                case "3":
+                    return 'telefonos';
+                case "2":
+                    return 'impresoras';
+                case "1":
+                    return 'pcs';
+                default:
+                    return '';
+            }
+        }
+
+        $('#addTipo').on('change', function() {
+            let templateToUse;
             switch ($(this).val()) {
                 case "11":
                     templateToUse = pcsCompTemplate;
@@ -594,7 +675,7 @@ use App\Models\ComponenteModel;
                     break;
                 case "5":
                     templateToUse = stockTemplate;
-                    titulo = "Informe de stock";
+                    titulo = "Informe de componentes";
                     break;
                 case "4":
                     templateToUse = routersTemplate;
@@ -616,98 +697,8 @@ use App\Models\ComponenteModel;
                     templateToUse = null;
             }
 
-            const simpleTables = [10, 9, 8, 7];
-            const value = parseInt($(this).val(), 10); // Convierte el valor a un número entero
-
-            const isValuePresent = simpleTables.includes(value);
-
-            if (templateToUse && isValuePresent) {
-                $('#div-table').html(templateToUse);
-                $('#addTitulo').val(titulo);
-
-                // Inicializar la tabla
-                table = $(
-                    `#table-${$(this).val() == 10 ? 'estados' : $(this).val() == 9 ? 'categorias' : $(this).val() == 8 ? 'depositos' : $(this).val() == 7 ? 'areas' : ''}`
-                ).DataTable({
-                    dom: 'Bfrtip',
-                    buttons: [{
-                        extend: 'excelHtml5',
-                        text: 'Exportar a Excel',
-                        className: 'btn btn-dark custom-export-btn',
-                        title: function() {
-                            return $('#addTitulo').val() || titulo;
-                        }
-                    }],
-                    paging: false,
-                    searching: false,
-                    info: false,
-                    autoWidth: true
-                });
-
-            } else {
-                $('#div-table').html(templateToUse);
-                $('#addTitulo').val(titulo);
-
-                // Inicializar la tabla
-                table = $(
-                    `#table-${$(this).val() == 12 ? 'pcs_mov' : $(this).val() == 11 ? 'pcs_comp' : $(this).val() == 6 ? 'historias' : $(this).val() == 5 ? 'componentes' : $(this).val() == 4 ? 'routers' : $(this).val() == 3 ? 'telefonos' : $(this).val() == 2 ? 'impresoras' : 'pcs'}`
-                ).DataTable({
-                    paging: false,
-                    searching: false,
-                    info: false,
-                    autoWidth: true
-                });
-
-                // Configurar eventos para cambiar visibilidad de columnas en el caso de historias
-                if ($(this).val() == 6) {
-                    $('.column-toggle').on('change', function() {
-                        var column = table.column($(this).attr('data-column'));
-                        column.visible(!column.visible());
-                        $("#table-historias").css("min-width", "100%");
-                    });
-                } else if ($(this).val() == 5) {
-                    $('.column-toggle').on('change', function() {
-                        var column = table.column($(this).attr('data-column'));
-                        column.visible(!column.visible());
-                        $("#table-componentes").css("min-width", "100%");
-                    });
-                } else if ($(this).val() == 4) {
-                    $('.column-toggle').on('change', function() {
-                        var column = table.column($(this).attr('data-column'));
-                        column.visible(!column.visible());
-                        $("#table-routers").css("min-width", "100%");
-                    });
-                } else if ($(this).val() == 3) {
-                    $('.column-toggle').on('change', function() {
-                        var column = table.column($(this).attr('data-column'));
-                        column.visible(!column.visible());
-                        $("#table-telefonos").css("min-width", "100%");
-                    });
-                } else if ($(this).val() == 2) {
-                    $('.column-toggle').on('change', function() {
-                        var column = table.column($(this).attr('data-column'));
-                        column.visible(!column.visible());
-                        $("#table-impresoras").css("min-width", "100%");
-                    });
-                } else if ($(this).val() == 1) {
-                    $('.column-toggle').on('change', function() {
-                        var column = table.column($(this).attr('data-column'));
-                        column.visible(!column.visible());
-                        $("#table-pcs").css("min-width", "100%");
-                    });
-                } else if ($(this).val() == 11) {
-                    $('.column-toggle').on('change', function() {
-                        var column = table.column($(this).attr('data-column'));
-                        column.visible(!column.visible());
-                        $("#table-pcs_comp").css("min-width", "100%");
-                    });
-                } else if ($(this).val() == 12) {
-                    $('.column-toggle').on('change', function() {
-                        var column = table.column($(this).attr('data-column'));
-                        column.visible(!column.visible());
-                        $("#table-pcs_mov").css("min-width", "100%");
-                    });
-                }
+            if (templateToUse) {
+                initializeTable(templateToUse);
             }
         });
 
@@ -758,7 +749,110 @@ use App\Models\ComponenteModel;
             });
         });
 
+        $(document).on('change', '#filter-range-hs', function() {
+            $('#date-hs, #start-date-hs, #end-date-hs').val(null);
+            if ($(this).is(':checked')) {
+                $('#date-filters-hs').hide();
+                $('#range-filters-hs').css('display', 'flex');
+            } else {
+                $('#range-filters-hs').css('display', 'none');
+                $('#date-filters-hs').show();
+            }
+        });
 
+        function formatDate(dateString) {
+            const options = {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            };
+            const date = new Date(dateString);
+            return date.toLocaleDateString(undefined, options) + ' ' + date.toLocaleTimeString();
+        }
 
+        // Apply filters
+        $(document).on('change',
+            '#date-hs, #start-date-hs, #end-date-hs, #filter-range-hs, #filtro-tecnicos-hs',
+            function() {
+                $('.column-toggle').prop('checked', true);
+                $.ajax({
+                    url: '/inv-tecnica/public/filter-reportes',
+                    method: 'GET',
+                    data: {
+                        tecnico: $('#filtro-tecnicos-hs').val(),
+                        date: $('#date-hs').val(),
+                        start_date: $('#start-date-hs').val(),
+                        end_date: $('#end-date-hs').val(),
+                    },
+                    success: function(data) {
+                        // Destruir la DataTable actual
+                        if (table) {
+                            table.destroy();
+                        }
+                        $('#table-historias tbody').empty();
+
+                        $.each(data, function(index, historia) {
+                            $('#table-historias tbody').append(`
+                        <tr>
+                            <td><b>${historia.tecnico}</b></td>
+                            <td><b>${historia.detalle}</b></td>
+                            <td><b>${historia.motivo}</b></td>
+                            <td><b>${formatDate(historia.created_at)}</b></td>
+                        </tr>
+                    `);
+                        });
+
+                        // Reinicializar la DataTable
+                        table = $('#table-historias').DataTable({
+                            paging: false,
+                            searching: false,
+                            info: false,
+                            autoWidth: true
+                        });
+                    }
+                });
+            });
+
+        $(document).on('change', '#filtro-deposito, #filtro-estado, #filtro-categoria, #filtro-stock',
+        function() {
+            $('.column-toggle').prop('checked', true);
+            $.ajax({
+                url: '/inv-tecnica/public/filter-stock',
+                method: 'GET',
+                data: {
+                    deposito: $('#filtro-deposito').val(),
+                    estado: $('#filtro-estado').val(),
+                    categoria: $('#filtro-categoria').val(),
+                    stock: $('#filtro-stock').val(),
+                },
+                success: function(data) {
+                    // Destruir la DataTable actual
+                    if (table) {
+                        table.destroy();
+                    }
+                    $('#table-componentes tbody').empty();
+
+                    $.each(data, function(index, componente) {
+                        $('#table-componentes tbody').append(`
+                    <tr>
+                        <td><b>${componente.categoria}</b></td>
+                        <td><b>${componente.nombre}</b></td>
+                        <td><b>${componente.deposito}</b></td>
+                        <td><b>${componente.stock}</b></td>
+                        <td><b>${componente.estado}</b></td>
+                    </tr>
+                `);
+                    });
+
+                    // Reinicializar la DataTable
+                    table = $('#table-componentes').DataTable({
+                        paging: false,
+                        searching: false,
+                        info: false,
+                        autoWidth: true
+                    });
+                }
+            });
+        });
     });
 </script>

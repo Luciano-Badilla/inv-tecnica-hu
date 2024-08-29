@@ -25,6 +25,10 @@ Route::get('', function () {
     return view('auth/login');
 });
 
+Route::get('', function () {
+    return view('auth/login');
+})->name('profile_view');
+
 Route::get('/inicio', [InicioController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('inicio');

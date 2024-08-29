@@ -5,6 +5,27 @@
 <?php use App\Models\ComponenteModel; ?>
 
 <x-app-layout>
+    @if (Auth::user()->pass_changed == false)
+        <div class="modal fade" id="infoPassModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-primaty" style="border-radius: 15px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Recordatorio cambio de contraseña</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p
+                            style="color: #d94f4f; background-color: #f9e2e2; border: 1px solid #d43f3a; padding: 10px; border-radius: 5px;">
+                            Para mantener la seguridad de su cuenta se recomienda que cambie su contraseña.
+                        </p>
+                        <a href="{{ route('profile.edit') }}" class="btn btn-dark" style="margin-top:3%">Cambiar
+                            contraseña</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <div class="modal fade" id="infoPcModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -116,7 +137,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="infoTelModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="infoTelModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content bg-primaty" style="border-radius: 15px">
                 <div class="modal-header">
@@ -592,6 +614,12 @@
 </x-app-layout>
 <script>
     $(document).ready(function() {
+
+        var passModal = new bootstrap.Modal(document.getElementById('infoPassModal'));
+
+        // Para abrir el modal
+        passModal.show();
+
         $('.card').on('click', function() {
             // Dispara el click en el botón infoBtnPc dentro del div
             if ($(this).data('tipo') == 'PC') {

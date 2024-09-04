@@ -18,4 +18,10 @@ class AreaModel extends Model
     {
         return $this->hasMany(PcModel::class, 'area_id');
     }
+
+    public function findByName($name)
+    {
+        // Realiza una consulta a la base de datos para encontrar un área por nombre
+        return $this->where('nombre', $name)->first();
+    }
 }

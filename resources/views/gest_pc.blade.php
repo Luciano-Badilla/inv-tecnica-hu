@@ -157,6 +157,15 @@
                                                 <option value="{{ $area->id }}">{{ $area->nombre }}</option>
                                             @endforeach
                                         </select>
+                                        <div class="mb-3" style="margin-top: 2.5%; display:none"
+                                            id="addNroConsul_div">
+                                            <label for="addNroConsul" class="form-label">Nº:</label>
+                                            <input type="text"
+                                                class="form-control @error('addNroConsul') is-invalid @enderror"
+                                                id="addNroConsul" name="addNroConsul" placeholder="Nº de consultorio"
+                                                style="border: 1px solid gray; border-radius: 5px; max-width: 165px;"
+                                                required>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="mb-3" id="deposito-select" style="flex: 1;">
@@ -355,6 +364,15 @@
                                                 <option value="{{ $area->id }}">{{ $area->nombre }}</option>
                                             @endforeach
                                         </select>
+                                        <div class="mb-3" style="margin-top: 2.5%; display:none"
+                                            id="editNroConsul_div">
+                                            <label for="editNroConsul" class="form-label">Nº:</label>
+                                            <input type="text"
+                                                class="form-control @error('editNroConsul') is-invalid @enderror"
+                                                id="editNroConsul" name="editNroConsul" placeholder="Nº de consultorio"
+                                                style="border: 1px solid gray; border-radius: 5px; max-width: 165px;"
+                                                required>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="mb-3" id="deposito-select" style="flex: 1;">
@@ -743,8 +761,6 @@
 
     </div>
 
-
-
 </x-app-layout>
 <script>
     $(document).ready(function() {
@@ -764,6 +780,22 @@
                     $(this).hide();
                 }
             });
+        });
+
+        $('#addArea').on('change', function() {
+            if ($(this).val() == 27) {
+                $('#addNroConsul_div').css('display', 'block');
+            } else {
+                $('#addNroConsul_div').css('display', 'none');
+            }
+        });
+
+        $('#editArea').on('change', function() {
+            if ($(this).val() == 27) {
+                $('#editNroConsul_div').css('display', 'block');
+            } else {
+                $('#editNroConsul_div').css('display', 'none');
+            }
         });
 
         // Función para actualizar las opciones en todos los selects de discos

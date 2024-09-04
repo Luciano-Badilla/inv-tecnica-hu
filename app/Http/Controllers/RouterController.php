@@ -31,7 +31,8 @@ class RouterController extends Controller
             ->get();
         $tipos = TipoComponenteModel::all();
         $depositos = DepositoModel::all();
-        $areas = AreaModel::all();
+        $areas = AreaModel::orderBy('nombre', 'asc')
+            ->get();
 
         // Pasar los datos a la vista
         return view('gest_routers', [
@@ -46,6 +47,7 @@ class RouterController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+        $areaModel = new AreaModel();
 
         // Validación
         $request->validate([
@@ -59,7 +61,17 @@ class RouterController extends Controller
         $router->identificador = $request->input('addIdentificador');
         $router->ip = $request->input('addIp');
         $router->deposito_id = $request->input('addDeposito');
-        $router->area_id = $request->input('addArea');
+        $area = AreaModel::find($request->input('addArea'))->nombre . " " . $request->input('addNroConsul');
+        if ($areaModel->findByName($area)) {
+            $router->area_id = $areaModel->findByName($area)->id;
+        } else {
+            $areaNueva = new AreaModel();
+            $areaNueva->nombre = $area;
+            $areaNueva->visible = false;
+            $areaNueva->save();
+
+            $router->area_id = $areaNueva->id;
+        }
         $router->area_detalle = $request->input('addAreaDetalle');
         $router->marca_modelo = $request->input('addMarca');
         $router->save();
@@ -81,6 +93,7 @@ class RouterController extends Controller
     public function edit(Request $request)
     {
         $user = Auth::user();
+        $areaModel = new AreaModel();
 
 
         $id = $request->input('editId');
@@ -110,9 +123,8 @@ class RouterController extends Controller
             $historia->tipo_id = 9; // Ajusta el tipo_id según sea necesario
             $historia->save();
             $router->area_detalle = $request->input('editAreaDetalle');
-        }else{
+        } else {
             $router->area_detalle = "";
-            
         }
 
         // Actualizar información básica de la router
@@ -130,15 +142,34 @@ class RouterController extends Controller
         }
 
         if ($router->area_id != $request->input('editArea') && $request->input('editArea') != null) {
-            $historia = new HistoriaModel();
-            $historia->tecnico = $user->name;
-            $historia->detalle = "editó el area del router: " . $router->identificador . " - " . $router->nombre . " de " . (AreaModel::find($router->area_id)->nombre ?? " area no asignada") . " a " . AreaModel::find($request->input('editArea'))->nombre ?? " area no asignada" . ", se quito del deposito: " . DepositoModel::find($router->deposito_id)->nombre ?? "deposito no asignado" . ".";
-            $historia->motivo = $request->input('editMotivo');
-            $historia->componente_id = $router->id;
-            $historia->tipo_dispositivo = 'Router'; // Tipo de transferencia
-            $historia->tipo_id = 9; // Ajusta el tipo_id según sea necesario
-            $historia->save();
-            $router->area_id = $request->input('editArea');
+            $area = AreaModel::find($request->input('editArea'))->nombre . " " . $request->input('editNroConsul');
+            if ($areaModel->findByName($area)) {
+                $historia = new HistoriaModel();
+                $historia->tecnico = $user->name;
+                $historia->detalle = "editó el area del router: " . $router->identificador . " - " . $router->nombre . " de " . (AreaModel::find($router->area_id)->nombre ?? " area no asignada") . " a " . $area ?? " area no asignada" . ", se quito del deposito: " . DepositoModel::find($router->deposito_id)->nombre ?? "deposito no asignado" . ".";
+                $historia->motivo = $request->input('editMotivo');
+                $historia->componente_id = $router->id;
+                $historia->tipo_dispositivo = 'Router'; // Tipo de transferencia
+                $historia->tipo_id = 9; // Ajusta el tipo_id según sea necesario
+                $historia->save();
+                $router->area_id = $areaModel->findByName($area)->id;
+            } else {
+                $areaNueva = new AreaModel();
+                $areaNueva->nombre = $area;
+                $areaNueva->visible = false;
+                $areaNueva->save();
+
+                $historia = new HistoriaModel();
+                $historia->tecnico = $user->name;
+                $historia->detalle = "editó el area del router: " . $router->identificador . " - " . $router->nombre . " de " . (AreaModel::find($router->area_id)->nombre ?? " area no asignada") . " a " . $area ?? " area no asignada" . ", se quito del deposito: " . DepositoModel::find($router->deposito_id)->nombre ?? "deposito no asignado" . ".";
+                $historia->motivo = $request->input('editMotivo');
+                $historia->componente_id = $router->id;
+                $historia->tipo_dispositivo = 'Router'; // Tipo de transferencia
+                $historia->tipo_id = 9; // Ajusta el tipo_id según sea necesario
+                $historia->save();
+
+                $router->area_id = $areaNueva->id;
+            }
             $router->deposito_id = null;
         }
 

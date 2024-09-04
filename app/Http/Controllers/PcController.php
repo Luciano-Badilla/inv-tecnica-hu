@@ -54,7 +54,9 @@ class PcController extends Controller
             ->get();
         $tipos = TipoComponenteModel::all();
         $depositos = DepositoModel::all();
-        $areas = AreaModel::all();
+        $areas = AreaModel::orderBy('nombre', 'asc')
+            ->get();
+
 
         // Pasar los datos a la vista
         return view('gest_pc', [
@@ -88,6 +90,7 @@ class PcController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+        $areaModel = new AreaModel();
 
         // Validación
         $request->validate([
@@ -105,7 +108,17 @@ class PcController extends Controller
         $pc->identificador = $request->input('addIdentificador');
         $pc->ip = $request->input('addIp');
         $pc->deposito_id = $request->input('addDeposito');
-        $pc->area_id = $request->input('addArea');
+        $area = AreaModel::find($request->input('addArea'))->nombre . " " . $request->input('addNroConsul');
+        if ($areaModel->findByName($area)) {
+            $pc->area_id = $areaModel->findByName($area)->id;
+        } else {
+            $areaNueva = new AreaModel();
+            $areaNueva->nombre = $area;
+            $areaNueva->visible = false;
+            $areaNueva->save();
+
+            $pc->area_id = $areaNueva->id;
+        }
         $pc->save();
 
         // Guardar componentes
@@ -227,6 +240,7 @@ class PcController extends Controller
     public function edit(Request $request)
     {
         $user = Auth::user();
+        $areaModel = new AreaModel();
 
         // Validación de entrada
         $request->validate([
@@ -272,15 +286,37 @@ class PcController extends Controller
         }
 
         if ($pc->area_id != $request->input('editArea') && $request->input('editArea') != null) {
-            $historia = new HistoriaModel();
-            $historia->tecnico = $user->name;
-            $historia->detalle = "cambio el area de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . (AreaModel::find($pc->area_id)->nombre ?? "area no asignada") . " a " . AreaModel::find($request->input('editArea'))->nombre . (($deposito = DepositoModel::find($pc->deposito_id)) ? ', se quitó del depósito ' . ($deposito->nombre ?? '') : '') . ".";
-            $historia->motivo = $request->input('editMotivo');
-            $historia->componente_id = $pc->id;
-            $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
-            $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
-            $historia->save();
-            $pc->area_id = $request->input('editArea');
+
+            $area = AreaModel::find($request->input('editArea'))->nombre . " " . $request->input('editNroConsul');
+            if ($areaModel->findByName($area)) {
+                $historia = new HistoriaModel();
+                $historia->tecnico = $user->name;
+                $historia->detalle = "cambio el area de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . (AreaModel::find($pc->area_id)->nombre ?? "area no asignada") . " a " . $area . (($deposito = DepositoModel::find($pc->deposito_id)) ? ', se quitó del depósito ' . ($deposito->nombre ?? '') : '') . ".";
+                $historia->motivo = $request->input('editMotivo');
+                $historia->componente_id = $pc->id;
+                $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
+                $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
+                $historia->save();
+
+                $pc->area_id = $areaModel->findByName($area)->id;
+                
+            } else {
+                $areaNueva = new AreaModel();
+                $areaNueva->nombre = $area;
+                $areaNueva->visible = false;
+                $areaNueva->save();
+
+                $historia = new HistoriaModel();
+                $historia->tecnico = $user->name;
+                $historia->detalle = "cambio el area de la PC: " . $pc->identificador . " - " . $pc->nombre . " de " . (AreaModel::find($pc->area_id)->nombre ?? "area no asignada") . " a " . $area . (($deposito = DepositoModel::find($pc->deposito_id)) ? ', se quitó del depósito ' . ($deposito->nombre ?? '') : '') . ".";
+                $historia->motivo = $request->input('editMotivo');
+                $historia->componente_id = $pc->id;
+                $historia->tipo_dispositivo = 'PC'; // Tipo de transferencia
+                $historia->tipo_id = 5; // Ajusta el tipo_id según sea necesario
+                $historia->save();
+
+                $pc->area_id = $areaNueva->id;
+            }
             $pc->deposito_id = null;
         }
 
@@ -717,8 +753,8 @@ class PcController extends Controller
     public function getHistoria($tipo, $id)
     {
         $historias = HistoriaModel::where('componente_id', $id)
-        ->where('tipo_dispositivo', $tipo)
-        ->get();
+            ->where('tipo_dispositivo', $tipo)
+            ->get();
         log::info($historias);
         return response()->json(['historia' => $historias]);
     }

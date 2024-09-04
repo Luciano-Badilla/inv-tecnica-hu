@@ -32,7 +32,8 @@ class TelefonoController extends Controller
             ->get();
         $tipos = TipoComponenteModel::all();
         $depositos = DepositoModel::all();
-        $areas = AreaModel::all();
+        $areas = AreaModel::orderBy('nombre', 'asc')
+            ->get();
 
         // Pasar los datos a la vista
         return view('gest_telefonos', [
@@ -47,6 +48,7 @@ class TelefonoController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+        $areaModel = new AreaModel();
 
         // Validación
         $request->validate([
@@ -60,7 +62,18 @@ class TelefonoController extends Controller
         $telefono->identificador = $request->input('addIdentificador');
         $telefono->ip = $request->input('addIp');
         $telefono->deposito_id = $request->input('addDeposito');
-        $telefono->area_id = $request->input('addArea');
+        $area = AreaModel::find($request->input('addArea'))->nombre . " " . $request->input('addNroConsul');
+
+        if ($areaModel->findByName($area)) {
+            $telefono->area_id = $areaModel->findByName($area)->id;
+        } else {
+            $areaNueva = new AreaModel();
+            $areaNueva->nombre = $area;
+            $areaNueva->visible = false;
+            $areaNueva->save();
+
+            $telefono->area_id = $areaNueva->id;
+        }
         $telefono->marca_modelo = $request->input('addMarca');
         $telefono->numero = $request->input('addNumero');
         $telefono->save();
@@ -82,6 +95,7 @@ class TelefonoController extends Controller
     public function edit(Request $request)
     {
         $user = Auth::user();
+        $areaModel = new AreaModel();
 
 
         $id = $request->input('editId');
@@ -128,16 +142,36 @@ class TelefonoController extends Controller
         }
 
         if ($telefono->area_id != $request->input('editArea') && $request->input('editArea') != null) {
-            $historia = new HistoriaModel();
-            $historia->tecnico = $user->name;
-            $historia->detalle = "editó el area del telefono: " . $telefono->identificador . " - " . $telefono->nombre . " de " . (AreaModel::find($telefono->area_id)->nombre ?? " area no asignada") . " a " . AreaModel::find($request->input('editArea'))->nombre ?? " area no asignada" . ", se quito del deposito: " . DepositoModel::find($telefono->deposito_id)->nombre ?? "deposito no asignado" . ".";
-            $historia->motivo = $request->input('editMotivo');
-            $historia->componente_id = $telefono->id;
-            $historia->tipo_dispositivo = 'Telefono'; // Tipo de transferencia
-            $historia->tipo_id = 8; // Ajusta el tipo_id según sea necesario
-            $historia->save();
-            $telefono->area_id = $request->input('editArea');
-            $telefono->deposito_id = null;
+            $area = AreaModel::find($request->input('editArea'))->nombre . " " . $request->input('editNroConsul');
+            if ($areaModel->findByName($area)) {
+                $historia = new HistoriaModel();
+                $historia->tecnico = $user->name;
+                $historia->detalle = "editó el area del telefono: " . $telefono->identificador . " - " . $telefono->nombre . " de " . (AreaModel::find($telefono->area_id)->nombre ?? " area no asignada") . " a " . $area ?? " area no asignada" . ", se quito del deposito: " . DepositoModel::find($telefono->deposito_id)->nombre ?? "deposito no asignado" . ".";
+                $historia->motivo = $request->input('editMotivo');
+                $historia->componente_id = $telefono->id;
+                $historia->tipo_dispositivo = 'Telefono'; // Tipo de transferencia
+                $historia->tipo_id = 8; // Ajusta el tipo_id según sea necesario
+                $historia->save();
+
+                $telefono->area_id = $areaModel->findByName($area)->id;
+                $telefono->deposito_id = null;
+            } else {
+                $areaNueva = new AreaModel();
+                $areaNueva->nombre = $area;
+                $areaNueva->visible = false;
+                $areaNueva->save();
+
+                $historia = new HistoriaModel();
+                $historia->tecnico = $user->name;
+                $historia->detalle = "editó el area del telefono: " . $telefono->identificador . " - " . $telefono->nombre . " de " . (AreaModel::find($telefono->area_id)->nombre ?? " area no asignada") . " a " . $area ?? " area no asignada" . ", se quito del deposito: " . DepositoModel::find($telefono->deposito_id)->nombre ?? "deposito no asignado" . ".";
+                $historia->motivo = $request->input('editMotivo');
+                $historia->componente_id = $telefono->id;
+                $historia->tipo_dispositivo = 'Telefono'; // Tipo de transferencia
+                $historia->tipo_id = 8; // Ajusta el tipo_id según sea necesario
+                $historia->save();
+
+                $telefono->area_id = $areaNueva->id;
+            }
         }
 
         if ($telefono->ip != $request->input('editIp')) {

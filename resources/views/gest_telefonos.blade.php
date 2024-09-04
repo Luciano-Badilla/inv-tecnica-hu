@@ -148,6 +148,15 @@
                                                 <option value="{{ $area->id }}">{{ $area->nombre }}</option>
                                             @endforeach
                                         </select>
+                                        <div class="mb-3" style="margin-top: 2.5%; display:none"
+                                            id="addNroConsul_div">
+                                            <label for="addNroConsul" class="form-label">Nº:</label>
+                                            <input type="text"
+                                                class="form-control @error('addNroConsul') is-invalid @enderror"
+                                                id="addNroConsul" name="addNroConsul" placeholder="Nº de consultorio"
+                                                style="border: 1px solid gray; border-radius: 5px; max-width: 165px;"
+                                                required>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="mb-3" id="deposito-select" style="flex: 1;">
@@ -252,6 +261,15 @@
                                                 <option value="{{ $area->id }}">{{ $area->nombre }}</option>
                                             @endforeach
                                         </select>
+                                        <div class="mb-3" style="margin-top: 2.5%; display:none"
+                                            id="editNroConsul_div">
+                                            <label for="editNroConsul" class="form-label">Nº:</label>
+                                            <input type="text"
+                                                class="form-control @error('editNroConsul') is-invalid @enderror"
+                                                id="editNroConsul" name="editNroConsul" placeholder="Nº de consultorio"
+                                                style="border: 1px solid gray; border-radius: 5px; max-width: 165px;"
+                                                required>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="mb-3" id="deposito-select" style="flex: 1;">
@@ -470,7 +488,10 @@
                                                 <i class="fa-solid fa-wrench"></i>
                                             </button>
                                             <button class="btn btn-dark icon historyBtn" data-bs-toggle="modal"
-                                                data-bs-target="#historyPcModal" data-id="{{ $telefono->id }}" data-nro_inv="{{ $telefono->identificador }}" data-nombre="{{ $telefono->nombre }}" data-tipo="{{ "Telefono" }}">
+                                                data-bs-target="#historyPcModal" data-id="{{ $telefono->id }}"
+                                                data-nro_inv="{{ $telefono->identificador }}"
+                                                data-nombre="{{ $telefono->nombre }}"
+                                                data-tipo="{{ 'Telefono' }}">
                                                 <i class="fa-solid fa-book"></i>
                                             </button>
                                             @if (Auth::user()->rol->nombre == 'Super administrador')
@@ -514,6 +535,22 @@
                     $(this).hide();
                 }
             });
+        });
+
+        $('#addArea').on('change', function() {
+            if ($(this).val() == 27) {
+                $('#addNroConsul_div').css('display', 'block');
+            } else {
+                $('#addNroConsul_div').css('display', 'none');
+            }
+        });
+
+        $('#editArea').on('change', function() {
+            if ($(this).val() == 27) {
+                $('#editNroConsul_div').css('display', 'block');
+            } else {
+                $('#editNroConsul_div').css('display', 'none');
+            }
         });
 
         var modalHandlerAttached = false;
@@ -721,7 +758,7 @@
             // Código específico para el botón de historial
         });
 
-        
+
         $("#table_historias_pc").DataTable({
             dom: 'Bfrtip',
             buttons: [{

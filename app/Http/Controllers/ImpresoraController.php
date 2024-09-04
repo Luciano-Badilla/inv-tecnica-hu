@@ -34,7 +34,8 @@ class ImpresoraController extends Controller
             ->get();
         $tipos = TipoComponenteModel::all();
         $depositos = DepositoModel::all();
-        $areas = AreaModel::all();
+        $areas = AreaModel::orderBy('nombre', 'asc')
+            ->get();
 
         // Pasar los datos a la vista
         return view('gest_impresoras', [
@@ -50,6 +51,7 @@ class ImpresoraController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+        $areaModel = new AreaModel();
 
         // Validación
         $request->validate([
@@ -64,7 +66,17 @@ class ImpresoraController extends Controller
         $impresora->identificador = $request->input('addIdentificador');
         $impresora->ip = $request->input('addIp');
         $impresora->deposito_id = $request->input('addDeposito');
-        $impresora->area_id = $request->input('addArea');
+        $area = AreaModel::find($request->input('addArea'))->nombre . " " . $request->input('addNroConsul');
+        if ($areaModel->findByName($area)) {
+            $impresora->area_id = $areaModel->findByName($area)->id;
+        } else {
+            $areaNueva = new AreaModel();
+            $areaNueva->nombre = $area;
+            $areaNueva->visible = false;
+            $areaNueva->save();
+
+            $impresora->area_id = $areaNueva->id;
+        }
         $impresora->toner_id = $transferecia->transferStateByPc($request->input('addToner'), 1, 5, "", null, null, false, false);
         $impresora->marca_modelo = $request->input('addMarca');
         $impresora->save();
@@ -86,6 +98,7 @@ class ImpresoraController extends Controller
     public function edit(Request $request)
     {
         $user = Auth::user();
+        $areaModel = new AreaModel();
 
 
         $id = $request->input('editId');
@@ -135,17 +148,40 @@ class ImpresoraController extends Controller
             $impresora->area_id = null;
         }
 
+
         if ($impresora->area_id != $request->input('editArea') && $request->input('editArea') != null) {
-            $historia = new HistoriaModel();
-            $historia->tecnico = $user->name;
-            $historia->detalle = "cambio el area de la impresora: " . $impresora->identificador . " - " . $impresora->nombre . " de " . (AreaModel::find($impresora->area_id)->nombre ?? " area no asignada") . " a " . AreaModel::find($request->input('editArea'))->nombre ?? " area no asignada" . ", se quito del deposito: " . (($deposito = DepositoModel::find($impresora->deposito_id)) ? ', se quitó del depósito ' . ($deposito->nombre ?? '') : '') . ".";
-            $historia->motivo = $request->input('editMotivo');
-            $historia->componente_id = $impresora->id;
-            $historia->tipo_dispositivo = 'Impresora'; // Tipo de transferencia
-            $historia->tipo_id = 7; // Ajusta el tipo_id según sea necesario
-            $historia->save();
-            $impresora->area_id = $request->input('editArea');
-            $impresora->deposito_id = null;
+
+            $area = AreaModel::find($request->input('editArea'))->nombre . " " . $request->input('editNroConsul');
+            if ($areaModel->findByName($area)) {
+                $historia = new HistoriaModel();
+                $historia->tecnico = $user->name;
+                $historia->detalle = "cambio el area de la impresora: " . $impresora->identificador . " - " . $impresora->nombre . " de " . (AreaModel::find($impresora->area_id)->nombre ?? " area no asignada") . " a " . $area ?? " area no asignada" . ", se quito del deposito: " . (($deposito = DepositoModel::find($impresora->deposito_id)) ? ', se quitó del depósito ' . ($deposito->nombre ?? '') : '') . ".";
+                $historia->motivo = $request->input('editMotivo');
+                $historia->componente_id = $impresora->id;
+                $historia->tipo_dispositivo = 'Impresora'; // Tipo de transferencia
+                $historia->tipo_id = 7; // Ajusta el tipo_id según sea necesario
+                $historia->save();
+
+                $impresora->area_id = $areaModel->findByName($area)->id;
+                $impresora->deposito_id = null;
+            } else {
+                $areaNueva = new AreaModel();
+                $areaNueva->nombre = $area;
+                $areaNueva->visible = false;
+                $areaNueva->save();
+
+                $historia = new HistoriaModel();
+                $historia->tecnico = $user->name;
+                $historia->detalle = "cambio el area de la impresora: " . $impresora->identificador . " - " . $impresora->nombre . " de " . (AreaModel::find($impresora->area_id)->nombre ?? " area no asignada") . " a " . $area ?? " area no asignada" . ", se quito del deposito: " . (($deposito = DepositoModel::find($impresora->deposito_id)) ? ', se quitó del depósito ' . ($deposito->nombre ?? '') : '') . ".";
+                $historia->motivo = $request->input('editMotivo');
+                $historia->componente_id = $impresora->id;
+                $historia->tipo_dispositivo = 'Impresora'; // Tipo de transferencia
+                $historia->tipo_id = 7; // Ajusta el tipo_id según sea necesario
+                $historia->save();
+
+                $pc->area_id = $areaNueva->id;
+                $impresora->deposito_id = null;
+            }
         }
 
         if ($impresora->ip != $request->input('editIp')) {

@@ -138,7 +138,7 @@
                                                 class="form-control @error('addNroConsul') is-invalid @enderror"
                                                 id="addNroConsul" name="addNroConsul" placeholder="Nº de consultorio"
                                                 style="border: 1px solid gray; border-radius: 5px; max-width: 165px;"
-                                                required>
+                                                >
                                         </div>
                                     </div>
                                 </div>
@@ -260,7 +260,7 @@
                                                 id="editNroConsul" name="editNroConsul"
                                                 placeholder="Nº de consultorio"
                                                 style="border: 1px solid gray; border-radius: 5px; max-width: 165px;"
-                                                required>
+                                                >
                                         </div>
                                     </div>
                                 </div>
@@ -551,16 +551,21 @@
         $('#addArea').on('change', function() {
             if ($(this).val() == 27) {
                 $('#addNroConsul_div').css('display', 'block');
+                $('#addNroConsul_div').attr('required', true);
+
             } else {
                 $('#addNroConsul_div').css('display', 'none');
+                $('#addNroConsul_div').attr('required', false);
             }
         });
 
         $('#editArea').on('change', function() {
             if ($(this).val() == 27) {
                 $('#editNroConsul_div').css('display', 'block');
+                $('#editNroConsul_div').css('required', true);
             } else {
                 $('#editNroConsul_div').css('display', 'none');
+                $('#editNroConsul_div').css('required', false);
             }
         });
 

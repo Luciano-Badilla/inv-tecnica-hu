@@ -150,8 +150,11 @@ class ImpresoraController extends Controller
 
 
         if ($impresora->area_id != $request->input('editArea') && $request->input('editArea') != null) {
-
-            $area = AreaModel::find($request->input('editArea'))->nombre . " " . $request->input('editNroConsul');
+            if ($request->input('editArea') == 27) {
+                $area = AreaModel::find($request->input('editArea'))->nombre . " " . ($request->input('editNroConsul') ?? '');
+            } else {
+                $area = AreaModel::find($request->input('editArea'))->nombre;
+            }
             if ($areaModel->findByName($area)) {
                 $historia = new HistoriaModel();
                 $historia->tecnico = $user->name;

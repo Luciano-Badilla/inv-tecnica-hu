@@ -980,8 +980,8 @@
                         }
                     }
                 });
-                
-                $("#table_historias_pc").css("min-width","100%");
+
+                $("#table_historias_pc").css("min-width", "100%");
 
                 $('#editModal').on('show.bs.modal', function(event) {
                     var button = $(event.relatedTarget); // Botón que abrió el modal
@@ -1247,6 +1247,10 @@
                         modal.find('#editArea').prop('disabled', true);
                         modal.find('#editDeposito').val(null);
                         modal.find('#editArea').val(null);
+                        $('#addNroConsul_div').css('display', 'none');
+                        $('#addNroConsul_div').attr('required', false);
+                        $('#editNroConsul_div').css('display', 'none');
+                        $('#editNroConsul_div').attr('required', false);
                     } else {
                         modal.find('#editDeposito').prop('disabled', true);
                         modal.find('#editArea').prop('disabled', false);

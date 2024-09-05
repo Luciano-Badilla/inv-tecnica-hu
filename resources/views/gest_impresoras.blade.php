@@ -137,8 +137,7 @@
                                             <input type="text"
                                                 class="form-control @error('addNroConsul') is-invalid @enderror"
                                                 id="addNroConsul" name="addNroConsul" placeholder="Nº de consultorio"
-                                                style="border: 1px solid gray; border-radius: 5px; max-width: 165px;"
-                                                >
+                                                style="border: 1px solid gray; border-radius: 5px; max-width: 165px;">
                                         </div>
                                     </div>
                                 </div>
@@ -259,8 +258,7 @@
                                                 class="form-control @error('editNroConsul') is-invalid @enderror"
                                                 id="editNroConsul" name="editNroConsul"
                                                 placeholder="Nº de consultorio"
-                                                style="border: 1px solid gray; border-radius: 5px; max-width: 165px;"
-                                                >
+                                                style="border: 1px solid gray; border-radius: 5px; max-width: 165px;">
                                         </div>
                                     </div>
                                 </div>
@@ -547,6 +545,30 @@
 </x-app-layout>
 <script>
     $(document).ready(function() {
+
+        $('#en-uso').on('change', function() {
+            var isChecked = $(this).is(':checked');
+
+            // Ajustar habilitación/deshabilitación en función del estado del checkbox
+            if (!isChecked) {
+                $('#addNroConsul_div').css('display', 'none');
+                $('#addNroConsul_div').attr('required', false);
+                $('#editNroConsul_div').css('display', 'none');
+                $('#editNroConsul_div').attr('required', false);
+            }
+        });
+
+        $('#editEn-uso').on('change', function() {
+            var isChecked = $(this).is(':checked');
+
+            // Ajustar habilitación/deshabilitación en función del estado del checkbox
+            if (!isChecked) {
+                $('#addNroConsul_div').css('display', 'none');
+                $('#addNroConsul_div').attr('required', false);
+                $('#editNroConsul_div').css('display', 'none');
+                $('#editNroConsul_div').attr('required', false);
+            }
+        });
 
         $('#addArea').on('change', function() {
             if ($(this).val() == 27) {

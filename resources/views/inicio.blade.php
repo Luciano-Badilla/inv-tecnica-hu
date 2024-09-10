@@ -238,15 +238,15 @@
                 font-size: 1.3rem;
                 font-weight: 600;
                 color: #1F2937;
-                padding: 1% 2%;
+                padding: 1% 0%;
                 
                 margin-top: 10px;
                 flex: 1; /* Ocupa el espacio disponible */
                 margin-right: 10px; /* Espacio entre los divs */
                 margin-left: 10px; /* Espacio entre los divs */
             ">
-                {{ __('Gestión de dispositivos:') }}
-                <div class="p-6 text-gray-900 flex justify-center flex-wrap" style="gap:10px">
+                <p style="margin-left: 2%">Gestión de dispositivos:</p>
+                <div class="p-6 text-gray-900 flex justify-start flex-wrap" style="gap:10px">
                     <a class="card pc-card" href="{{ route('gest_pc') }}"
                         style="max-width: 16%; display: flex; flex-direction: column; justify-content: flex-start; height: auto;">
                         <!-- Ajusta la altura según tus necesidades -->
@@ -285,7 +285,7 @@
                     </a>
                     <a class="card pc-card" href="{{ route('gest_routers') }}"
                         style="max-width: 16%; display: flex; flex-direction: column; justify-content: flex-start; height: auto;">
-                        <!-- Ajusta la altura según tus necesidades -->
+                       
                         <span class="icon">
                             <img src="https://i.postimg.cc/kXNyhjyT/image-removebg-preview.png" alt="PC Icon"
                                 style="filter:invert(100%)">
@@ -607,6 +607,7 @@
                 </div>
 
             </div>
+            
         </div>
 
     </div>

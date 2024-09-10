@@ -250,7 +250,7 @@
                                     <div id="input-container-1">
                                         <div class="form-group input-group mb-3">
                                             <select id="discos1-1" name="discos1[]" class="form-control"
-                                                style="border: 1px solid gray; border-top-left-radius: 5px; border-bottom-left-radius: 5px; max-width: 165px;">
+                                                style="border: 1px solid gray; border-top-left-radius: 5px; border-bottom-left-radius: 5px; max-width: 165px;" required>
                                                 <option value="" disabled selected>Selecciona un disco
                                                 </option>
                                                 @foreach ($discos as $disco)
@@ -278,7 +278,7 @@
                                     <div id="material-container-1">
                                         <div class="form-group input-group mb-3">
                                             <select id="rams1-1" name="rams1[]" class="form-control"
-                                                style="border: 1px solid gray; border-top-left-radius: 5px; border-bottom-left-radius: 5px; max-width: 165px;">
+                                                style="border: 1px solid gray; border-top-left-radius: 5px; border-bottom-left-radius: 5px; max-width: 165px;" required>
                                                 <option value="" disabled selected>Selecciona una RAM
                                                 </option>
                                                 @foreach ($rams as $ram)

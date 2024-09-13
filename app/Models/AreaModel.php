@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class AreaModel extends Model
 {
     use HasFactory;
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nombre','visible'];
 
     protected $table = 'area';
     public $timestamps = false;

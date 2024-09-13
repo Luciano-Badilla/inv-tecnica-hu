@@ -66,16 +66,22 @@ class ImpresoraController extends Controller
         $impresora->identificador = $request->input('addIdentificador');
         $impresora->ip = $request->input('addIp');
         $impresora->deposito_id = $request->input('addDeposito');
-        $area = AreaModel::find($request->input('addArea'))->nombre . " " . $request->input('addNroConsul');
-        if ($areaModel->findByName($area)) {
-            $impresora->area_id = $areaModel->findByName($area)->id;
-        } else {
-            $areaNueva = new AreaModel();
-            $areaNueva->nombre = $area;
-            $areaNueva->visible = false;
-            $areaNueva->save();
+        if (!$request->input('addDeposito')) {
+            if ($request->input('addNroConsul')) {
+                $area = AreaModel::find($request->input('addArea'))->nombre . " " . $request->input('addNroConsul');
+            } else {
+                $area = AreaModel::find($request->input('addArea'))->nombre;
+            }
+            if ($areaModel->findByName($area)) {
+                $impresora->area_id = $areaModel->findByName($area)->id;
+            } else {
+                $areaNueva = new AreaModel();
+                $areaNueva->nombre = $area;
+                $areaNueva->visible = false;
+                $areaNueva->save();
 
-            $impresora->area_id = $areaNueva->id;
+                $impresora->area_id = $areaNueva->id;
+            }
         }
         $impresora->toner_id = $transferecia->transferStateByPc($request->input('addToner'), 1, 5, "", null, null, false, false);
         $impresora->marca_modelo = $request->input('addMarca');

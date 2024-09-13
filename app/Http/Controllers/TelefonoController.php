@@ -62,17 +62,22 @@ class TelefonoController extends Controller
         $telefono->identificador = $request->input('addIdentificador');
         $telefono->ip = $request->input('addIp');
         $telefono->deposito_id = $request->input('addDeposito');
-        $area = AreaModel::find($request->input('addArea'))->nombre . " " . $request->input('addNroConsul');
+        if (!$request->input('addDeposito')) {
+            if ($request->input('addNroConsul')) {
+                $area = AreaModel::find($request->input('addArea'))->nombre . " " . $request->input('addNroConsul');
+            } else {
+                $area = AreaModel::find($request->input('addArea'))->nombre;
+            }
+            if ($areaModel->findByName($area)) {
+                $telefono->area_id = $areaModel->findByName($area)->id;
+            } else {
+                $areaNueva = new AreaModel();
+                $areaNueva->nombre = $area;
+                $areaNueva->visible = false;
+                $areaNueva->save();
 
-        if ($areaModel->findByName($area)) {
-            $telefono->area_id = $areaModel->findByName($area)->id;
-        } else {
-            $areaNueva = new AreaModel();
-            $areaNueva->nombre = $area;
-            $areaNueva->visible = false;
-            $areaNueva->save();
-
-            $telefono->area_id = $areaNueva->id;
+                $telefono->area_id = $areaNueva->id;
+            }
         }
         $telefono->marca_modelo = $request->input('addMarca');
         $telefono->numero = $request->input('addNumero');
@@ -147,6 +152,7 @@ class TelefonoController extends Controller
             } else {
                 $area = AreaModel::find($request->input('editArea'))->nombre;
             }
+            
             if ($areaModel->findByName($area)) {
                 $historia = new HistoriaModel();
                 $historia->tecnico = $user->name;

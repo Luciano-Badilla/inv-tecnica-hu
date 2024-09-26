@@ -575,8 +575,8 @@
 
             // Filtrar las tarjetas de PC
             $('.card').each(function() {
-                var nombre = $(this).data('nombre');
-                var id = $(this).data('id');
+                var nombre = String($(this).data('nombre'));
+                var id = String($(this).data('id'));
 
                 // Mostrar la tarjeta si el nombre o la IP contiene el término de búsqueda
                 if (nombre.includes(searchTerm) || id.includes(searchTerm)) {

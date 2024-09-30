@@ -250,7 +250,8 @@
                                     <div id="input-container-1">
                                         <div class="form-group input-group mb-3">
                                             <select id="discos1-1" name="discos1[]" class="form-control"
-                                                style="border: 1px solid gray; border-top-left-radius: 5px; border-bottom-left-radius: 5px; max-width: 165px;" required>
+                                                style="border: 1px solid gray; border-top-left-radius: 5px; border-bottom-left-radius: 5px; max-width: 165px;"
+                                                required>
                                                 <option value="" disabled selected>Selecciona un disco
                                                 </option>
                                                 @foreach ($discos as $disco)
@@ -278,7 +279,8 @@
                                     <div id="material-container-1">
                                         <div class="form-group input-group mb-3">
                                             <select id="rams1-1" name="rams1[]" class="form-control"
-                                                style="border: 1px solid gray; border-top-left-radius: 5px; border-bottom-left-radius: 5px; max-width: 165px;" required>
+                                                style="border: 1px solid gray; border-top-left-radius: 5px; border-bottom-left-radius: 5px; max-width: 165px;"
+                                                required>
                                                 <option value="" disabled selected>Selecciona una RAM
                                                 </option>
                                                 @foreach ($rams as $ram)
@@ -647,16 +649,20 @@
                 -->
                     <div class="container mt-4">
                         <div style="display: flex; justify-content: space-between;">
-                            <div>
-                                <button id="addButton" class="btn btn-dark mr-2" data-bs-toggle="modal"
-                                    data-bs-target="#addModal">
-                                    <i class="fas fa-plus"></i> Armar PC
-                                </button>
-                                <button type="button" class="small-box-footer show" id="show"
-                                    data-bs-toggle="modal" data-bs-target="#infoAddPc">
-                                    <i class="fa-solid fa-circle-info"></i>
-                                </button>
-                            </div>
+                            @if (Auth::user()->rol->nombre == 'Administrador' ||
+                                    Auth::user()->rol->nombre == 'Super administrador' ||
+                                    Auth::user()->rol->nombre == 'Tecnico')
+                                <div>
+                                    <button id="addButton" class="btn btn-dark mr-2" data-bs-toggle="modal"
+                                        data-bs-target="#addModal">
+                                        <i class="fas fa-plus"></i> Armar PC
+                                    </button>
+                                    <button type="button" class="small-box-footer show" id="show"
+                                        data-bs-toggle="modal" data-bs-target="#infoAddPc">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                    </button>
+                                </div>
+                            @endif
                             <div>
                                 <input class="search_input" id="search_pc" type="text" placeholder="Buscar">
                             </div>
@@ -717,23 +723,28 @@
                                                 data-rams="{{ $pc->componentes->where('tipo_id', 1)->pluck('nombre')->implode(', ') }}">
                                                 <i class="fas fa-circle-info"></i>
                                             </button>
-                                            <button class="btn btn-dark icon maintenanceBtn" data-bs-toggle="modal"
-                                                data-bs-target="#editPcModal" data-id="{{ $pc->id }}"
-                                                data-identificador="{{ $pc->identificador }}"
-                                                data-nombre="{{ $pc->nombre }}" data-ip="{{ $pc->ip }}"
-                                                data-area="{{ $pc->area_id }}"
-                                                data-deposito="{{ $pc->deposito_id }}"
-                                                data-enuso="{{ $pc->area_id ? 'true' : 'false' }}"
-                                                data-mother="{{ $pc->componentes->firstWhere('tipo_id', 5) }}"
-                                                data-proce="{{ $pc->componentes->firstWhere('tipo_id', 4) }}"
-                                                data-fuente="{{ $pc->componentes->firstWhere('tipo_id', 2) }}"
-                                                data-placavid="{{ $pc->componentes->firstWhere('tipo_id', 7) }}"
-                                                data-discosids="{{ $pc->componentes->whereIn('tipo_id', [6, 3])->pluck('id')->implode(', ') }}"
-                                                data-discosobj='@json($pc->componentes->whereIn('tipo_id', [6, 3]))'
-                                                data-ramsids="{{ $pc->componentes->where('tipo_id', 1)->pluck('id')->implode(', ') }}"
-                                                data-ramsobj="{{ $pc->componentes->where('tipo_id', 1) }}">
-                                                <i class="fa-solid fa-wrench"></i>
-                                            </button>
+                                            @if (Auth::user()->rol->nombre == 'Administrador' ||
+                                                    Auth::user()->rol->nombre == 'Super administrador' ||
+                                                    Auth::user()->rol->nombre == 'Tecnico')
+                                                <button class="btn btn-dark icon maintenanceBtn"
+                                                    data-bs-toggle="modal" data-bs-target="#editPcModal"
+                                                    data-id="{{ $pc->id }}"
+                                                    data-identificador="{{ $pc->identificador }}"
+                                                    data-nombre="{{ $pc->nombre }}" data-ip="{{ $pc->ip }}"
+                                                    data-area="{{ $pc->area_id }}"
+                                                    data-deposito="{{ $pc->deposito_id }}"
+                                                    data-enuso="{{ $pc->area_id ? 'true' : 'false' }}"
+                                                    data-mother="{{ $pc->componentes->firstWhere('tipo_id', 5) }}"
+                                                    data-proce="{{ $pc->componentes->firstWhere('tipo_id', 4) }}"
+                                                    data-fuente="{{ $pc->componentes->firstWhere('tipo_id', 2) }}"
+                                                    data-placavid="{{ $pc->componentes->firstWhere('tipo_id', 7) }}"
+                                                    data-discosids="{{ $pc->componentes->whereIn('tipo_id', [6, 3])->pluck('id')->implode(', ') }}"
+                                                    data-discosobj='@json($pc->componentes->whereIn('tipo_id', [6, 3]))'
+                                                    data-ramsids="{{ $pc->componentes->where('tipo_id', 1)->pluck('id')->implode(', ') }}"
+                                                    data-ramsobj="{{ $pc->componentes->where('tipo_id', 1) }}">
+                                                    <i class="fa-solid fa-wrench"></i>
+                                                </button>
+                                            @endif
                                             <button class="btn btn-dark icon historyBtn" data-bs-toggle="modal"
                                                 data-bs-target="#historyPcModal" data-id="{{ $pc->id }}"
                                                 data-nro_inv="{{ $pc->identificador }}"

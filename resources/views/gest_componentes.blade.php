@@ -610,6 +610,7 @@
 
 
                                         <td>
+                                            @if (Auth::user()->rol->nombre == 'Administrador' || Auth::user()->rol->nombre == 'Super administrador' || Auth::user()->rol->nombre == 'Tecnico')
                                             <div style="display: flex; justify-content: right;">
                                                 <button class="btn btn-dark mr-2 select-button"
                                                     data-id="{{ $componente->id }}"
@@ -633,6 +634,7 @@
                                                 @endif
 
                                             </div>
+                                            @endif
                                         </td>
                     </div>
                     </tr>

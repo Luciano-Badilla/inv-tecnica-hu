@@ -858,6 +858,7 @@
                         var api = this.api();
                         // Añadir el botón después de que DataTables se haya inicializado
                         $('.dataTables_length').prepend(
+                            '@if (Auth::user()->rol->nombre == 'Administrador' || Auth::user()->rol->nombre == 'Super administrador' || Auth::user()->rol->nombre == 'Tecnico')' +
                             '<div>' +
                             '<button id="addButton" class="btn btn-dark " data-bs-toggle="modal" data-bs-target="#addModal">' +
                             '<i class="fas fa-plus"></i> Nuevo Componente' +
@@ -876,7 +877,8 @@
                             '<i class="fa-solid fa-chart-column"></i> Cambiar estado' +
                             '</button>' +
                             '</div>' +
-                            '</div>'
+                            '</div>' +
+                            '@endif'
                         );
                     },
                     "responsive": true,

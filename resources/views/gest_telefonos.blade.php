@@ -411,12 +411,14 @@
                 -->
                     <div class="container mt-4">
                         <div style="display: flex; justify-content: space-between;">
+                            @if (Auth::user()->rol->nombre == 'Administrador' || Auth::user()->rol->nombre == 'Super administrador' || Auth::user()->rol->nombre == 'Tecnico')
                             <div>
                                 <button id="addButton" class="btn btn-dark mr-2" data-bs-toggle="modal"
                                     data-bs-target="#addModal">
                                     <i class="fas fa-plus"></i> Cargar telefono
                                 </button>
                             </div>
+                            @endif
                             <div>
                                 <input class="search_input" id="search_tel" type="text" placeholder="Buscar">
                             </div>
@@ -475,6 +477,7 @@
                                                 data-marca="{{ $telefono->marca_modelo ?? '' }}">
                                                 <i class="fas fa-circle-info"></i>
                                             </button>
+                                            @if (Auth::user()->rol->nombre == 'Administrador' || Auth::user()->rol->nombre == 'Super administrador' || Auth::user()->rol->nombre == 'Tecnico')
                                             <button class="btn btn-dark icon maintenanceBtn" data-bs-toggle="modal"
                                                 data-bs-target="#editTelModal" data-id="{{ $telefono->id }}"
                                                 data-identificador="{{ $telefono->identificador }}"
@@ -486,6 +489,7 @@
                                                 data-marca="{{ $telefono->marca_modelo ?? '' }}">
                                                 <i class="fa-solid fa-wrench"></i>
                                             </button>
+                                            @endif
                                             <button class="btn btn-dark icon historyBtn" data-bs-toggle="modal"
                                                 data-bs-target="#historyPcModal" data-id="{{ $telefono->id }}"
                                                 data-nro_inv="{{ $telefono->identificador }}"

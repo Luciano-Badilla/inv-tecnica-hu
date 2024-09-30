@@ -433,6 +433,7 @@
                 -->
                     <div class="container mt-4">
                         <div style="display: flex; justify-content: space-between;">
+                            @if (Auth::user()->rol->nombre == 'Administrador' || Auth::user()->rol->nombre == 'Super administrador' || Auth::user()->rol->nombre == 'Tecnico')
                             <div>
                                 <button id="addButton" class="btn btn-dark mr-2" data-bs-toggle="modal"
                                     data-bs-target="#addModal">
@@ -443,6 +444,7 @@
                                     <i class="fa-solid fa-circle-info"></i>
                                 </button>
                             </div>
+                            @endif
                             <div>
                                 <input class="search_input" id="buscador" type="text" placeholder="Buscar">
                             </div>
@@ -501,18 +503,23 @@
                                                 data-marca="{{ $impresora->marca_modelo ?? '' }}">
                                                 <i class="fas fa-circle-info"></i>
                                             </button>
-                                            <button class="btn btn-dark icon maintenanceBtn" data-bs-toggle="modal"
-                                                data-bs-target="#editImpModal" data-id="{{ $impresora->id }}"
-                                                data-identificador="{{ $impresora->identificador }}"
-                                                data-nombre="{{ $impresora->nombre }}"
-                                                data-ip="{{ $impresora->ip }}"
-                                                data-area="{{ $impresora->area->id ?? 'Área no asignada' }}"
-                                                data-deposito="{{ $impresora->deposito->id ?? 'Depósito no asignado' }}"
-                                                data-enuso="{{ $impresora->area && $impresora->area->nombre ? 'true' : 'false' }}"
-                                                data-toner="{{ ComponenteModel::find($impresora->toner_id) }}"
-                                                data-marca="{{ $impresora->marca_modelo ?? '' }}">
-                                                <i class="fa-solid fa-wrench"></i>
-                                            </button>
+                                            @if (Auth::user()->rol->nombre == 'Administrador' ||
+                                                    Auth::user()->rol->nombre == 'Super administrador' ||
+                                                    Auth::user()->rol->nombre == 'Tecnico')
+                                                <button class="btn btn-dark icon maintenanceBtn"
+                                                    data-bs-toggle="modal" data-bs-target="#editImpModal"
+                                                    data-id="{{ $impresora->id }}"
+                                                    data-identificador="{{ $impresora->identificador }}"
+                                                    data-nombre="{{ $impresora->nombre }}"
+                                                    data-ip="{{ $impresora->ip }}"
+                                                    data-area="{{ $impresora->area->id ?? 'Área no asignada' }}"
+                                                    data-deposito="{{ $impresora->deposito->id ?? 'Depósito no asignado' }}"
+                                                    data-enuso="{{ $impresora->area && $impresora->area->nombre ? 'true' : 'false' }}"
+                                                    data-toner="{{ ComponenteModel::find($impresora->toner_id) }}"
+                                                    data-marca="{{ $impresora->marca_modelo ?? '' }}">
+                                                    <i class="fa-solid fa-wrench"></i>
+                                                </button>
+                                            @endif
                                             <button class="btn btn-dark icon historyBtn" data-bs-toggle="modal"
                                                 data-bs-target="#historyImpModal" data-id="{{ $impresora->id }}"
                                                 data-nro_inv="{{ $impresora->identificador }}"
